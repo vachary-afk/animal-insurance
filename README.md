@@ -1,6 +1,6 @@
 # Shory Animal Care — V2 prototype
 
-A clickable prototype of the pets, horses and camels proposition discussed with
+A clickable prototype of the horses and camels proposition discussed with
 D1 Management. One self-contained HTML file: no build step, no dependencies, no
 package install.
 
@@ -14,14 +14,13 @@ is taken. See *Before this goes anywhere near a customer* at the bottom.
 Four steps: **Your animals → Your package → Your quote → Secure it**, then a
 simulated payment and an issued policy with a printable schedule.
 
-- **Three species.** Horses and camels are quoted in the prototype, each with its
-  own question set and an agreed value driving the death benefit. **Pets hand off
-  to the live product** at <https://www.shory.com/pet-insurance/quote>, since that
-  journey already exists — the card opens it in a new tab rather than duplicating
-  it here.
+- **Two species.** Horses and camels, each with its own question set and an
+  agreed value driving the death benefit. **Pets are not offered here** — that
+  product is already live at <https://www.shory.com/pet-insurance/quote>. The
+  pet data and its handoff link remain in the file but are filtered out of the
+  home grid, so the card can be restored by removing one filter.
 - **Bronze / Silver / Gold / Platinum**, priced on annual limits rather than a
-  fixed pot per treatment. Pets run to AED 100k, camels to AED 180k, horses to
-  AED 250k.
+  fixed pot per treatment. Camels run to AED 180k, horses to AED 250k.
 - **Add-ons at cost.** Anything a package leaves out can be bought individually,
   so a customer on a low vet limit need not give up loss of use or tack cover.
 - **D1 direct billing.** Choosing the D1 network is 10% cheaper and removes claim
