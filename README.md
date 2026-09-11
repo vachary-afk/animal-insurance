@@ -14,9 +14,11 @@ is taken. See *Before this goes anywhere near a customer* at the bottom.
 Four steps: **Your animals → Your package → Your quote → Secure it**, then a
 simulated payment and an issued policy with a printable schedule.
 
-- **Three species.** Pets (dogs and cats), horses and camels, each with its own
-  question set. Horses and camels carry an agreed value for the death benefit;
-  pets do not, because pet mortality is a capped benefit.
+- **Three species.** Horses and camels are quoted in the prototype, each with its
+  own question set and an agreed value driving the death benefit. **Pets hand off
+  to the live product** at <https://www.shory.com/pet-insurance/quote>, since that
+  journey already exists — the card opens it in a new tab rather than duplicating
+  it here.
 - **Bronze / Silver / Gold / Platinum**, priced on annual limits rather than a
   fixed pot per treatment. Pets run to AED 100k, camels to AED 180k, horses to
   AED 250k.

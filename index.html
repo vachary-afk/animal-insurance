@@ -105,7 +105,9 @@
     .icon-chip svg{width:18px;height:18px;color:var(--accent)}
 
     button{font-family:var(--font)}
-    .btn{display:flex;align-items:center;justify-content:center;width:100%;height:var(--btn-h);border:0;border-radius:var(--radius-btn);padding:0 var(--gap-lg);font-size:var(--t-500);font-weight:var(--w-bold);cursor:pointer;transition:background .15s,border-color .15s}
+    .btn{display:flex;align-items:center;justify-content:center;width:100%;height:var(--btn-h);border:0;border-radius:var(--radius-btn);padding:0 var(--gap-lg);font-size:var(--t-500);font-weight:var(--w-bold);cursor:pointer;transition:background .15s,border-color .15s;font-family:var(--font);text-decoration:none;box-sizing:border-box}
+    a.btn{color:var(--on-accent)}
+    a.btn:visited{color:var(--on-accent)}
     .btn-primary{background:var(--accent);color:var(--on-accent)}
     .btn-primary:hover{background:var(--accent-hover)}
     .btn-primary:disabled{background:var(--p-300);cursor:not-allowed}
@@ -186,7 +188,7 @@
     @media(min-width:640px){.hero h1{font-size:var(--t-1100);line-height:52px}}
 
     .grid3{display:grid;grid-template-columns:1fr;gap:var(--gap-md)}
-    @media(min-width:640px){.grid3{grid-template-columns:repeat(2,1fr);max-width:668px;margin-inline:auto}}
+    @media(min-width:640px){.grid3{grid-template-columns:repeat(3,1fr)}}
     .grid4{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-default)}
     @media(min-width:720px){.grid4{grid-template-columns:repeat(4,1fr)}}
 
@@ -277,7 +279,7 @@
   <div class="hero">
     <div class="wrap-wide">
       <p class="eyebrow">In partnership with the D1 veterinary network</p>
-      <h1>Horses. Camels.<br />Covered properly.</h1>
+      <h1>Pets. Horses. Camels.<br />Covered properly.</h1>
       <p>Four packages, from everyday care to the highest annual limits in the market. Treated at a D1 clinic? We settle the bill directly.</p>
     </div>
   </div>
@@ -426,7 +428,10 @@ const NETWORKS = {
 // SPECIES
 // ═══════════════════════════════════════════════════════════════
 const SPECIES = {
+  // Pet insurance is already live on shory.com, so the card hands off to the
+  // production journey rather than re-running it inside the prototype.
   pet:  {label:'Pets',   one:'pet',   many:'pets',   Title:'Pet',   valueBased:false,
+         url:'https://www.shory.com/pet-insurance/quote',
          blurb:'Dogs and cats. Everyday care through to surgery, chronic conditions and overseas travel.'},
   horse:{label:'Horses', one:'horse', many:'horses', Title:'Horse', valueBased:true,
          blurb:'Leisure to competition. Vet fees plus mortality at agreed value.'},
@@ -788,7 +793,7 @@ function renderHome(){
   document.getElementById('contract-seg').innerHTML=
     OWNER_MODES.map(m=>'<button data-mode="'+m.id+'" aria-pressed="'+(ownerMode===m.id)+'">'+m.label+'</button>').join('')
 
-  document.getElementById('species-cards').innerHTML=Object.entries(SPECIES).filter(([k])=>k!=='pet').map(([k,s])=>{
+  document.getElementById('species-cards').innerHTML=Object.entries(SPECIES).map(([k,s])=>{
     const on=homeSpecies===k
     return '<div class="card" style="text-align:center;display:flex;flex-direction:column;padding:var(--gap-lg);'+
       (on?'border-color:var(--accent);':'')+'">'+
@@ -797,8 +802,11 @@ function renderHome(){
         '<div style="width:96px;height:96px;border-radius:var(--radius-full);background:var(--accent-soft);display:flex;align-items:center;justify-content:center">'+svgFor(k,50)+'</div>'+
       '</div>'+
       '<p class="tiny" style="margin:0 0 var(--gap-lg);min-height:52px">'+s.blurb+'</p>'+
-      '<button class="btn btn-primary" onclick="startQuote(\''+k+'\')">Get a quote</button>'+
-      '<button class="btn btn-ghost" style="margin-top:var(--gap-default);height:38px;font-size:var(--t-300)" data-peek="'+k+'">'+(on?'Showing limits below':'See limits')+'</button>'+
+      (s.url
+        ? '<a class="btn btn-primary" href="'+s.url+'" target="_blank" rel="noopener noreferrer">Get a quote</a>'+
+          '<p class="tiny" style="margin:var(--gap-default) 0 0;text-align:center;color:var(--text-faint)">Live on shory.com</p>'
+        : '<button class="btn btn-primary" onclick="startQuote(\''+k+'\')">Get a quote</button>'+
+          '<button class="btn btn-ghost" style="margin-top:var(--gap-default);height:38px;font-size:var(--t-300)" data-peek="'+k+'">'+(on?'Showing limits below':'See limits')+'</button>')+
       '</div>'
   }).join('')
 
