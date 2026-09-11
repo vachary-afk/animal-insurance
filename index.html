@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shory Animal Care V2</title>
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       Foundry — Shory brand tokens, sized as shory.com uses them.
+       Ramps from Foundry › Variables › Shory + Global.
+       ═══════════════════════════════════════════════════════════ */
+    :root{
+      --p-50:#F0F5FF;  --p-100:#DBE7FF; --p-200:#BDD3FF; --p-300:#99BBFF; --p-400:#8AB1FF;
+      --p-500:#578FFF; --p-600:#1D68FF; --p-700:#1A50BC; --p-800:#15377D; --p-900:#11295A;
+      --s-50:#F8F8F8;  --s-100:#F1F1F4; --s-200:#E3E4E8; --s-300:#D5D6DD; --s-400:#BEC0CA;
+      --s-500:#B2B4C0; --s-600:#85899B; --s-700:#606476; --s-800:#4A4D5A; --s-900:#34323E;
+      --g-50:#EBFAF2;  --g-100:#C2F0D9; --g-600:#29A366; --g-700:#248F59; --g-800:#1A6640;
+      --y-50:#FFFAEC;  --y-100:#FFE5A3; --y-300:#E6B538; --y-700:#664900; --y-800:#45350D;
+      --r-50:#FFEFED;  --r-400:#DE3730; --r-600:#BA1A1A;
+      --br-50:#FCF9F7; --br-400:#D29A7A; --br-600:#995934;
+      --gold-100:#F2ECCF; --gold-400:#CBA344; --gold-600:#92722A;
+      --main:#1F1F1F;
+
+      --radius-sm:4px; --radius-default:8px; --radius-btn:12px; --radius-lg:16px;
+      --radius-card:24px; --radius-full:999px;
+      --gap-xs:4px; --gap-default:8px; --gap-md:12px; --gap-lg:16px; --gap-xl:24px; --gap-2xl:32px;
+      --btn-h:48px; --bw:1px;
+
+      --t-200:10px; --t-300:12px; --t-400:14px; --t-500:16px; --t-600:20px;
+      --t-700:24px; --t-800:28px; --t-900:32px; --t-1100:40px;
+      --w-regular:400; --w-medium:600; --w-bold:700;
+      --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Inter,sans-serif;
+
+      --ground:#FFFFFF;
+      --surface:#FFFFFF;
+      --surface-alt:var(--s-50);
+      --text:#000000;
+      --text-muted:var(--s-700);
+      --text-faint:var(--s-600);
+      --line:var(--s-200);
+      --line-strong:var(--s-300);
+      --card-shadow:0 .91px 11.83px 3.64px rgba(0,0,0,.04);
+      --accent:var(--p-600); --accent-hover:var(--p-700);
+      --accent-soft:var(--p-50); --accent-soft-line:var(--p-200);
+      --on-accent:#FFFFFF; --chip-on:#000000;
+      --ok:var(--g-600); --ok-soft:var(--g-50); --ok-line:var(--g-100);
+      --warn:var(--y-800); --warn-soft:var(--y-50); --warn-line:var(--y-100);
+      --bad:var(--r-600);
+    }
+    @media (prefers-color-scheme: dark){
+      :root:not([data-theme="light"]){
+        --ground:var(--main); --surface:#2A2A30; --surface-alt:#232329;
+        --text:#FFFFFF; --text-muted:var(--s-500); --text-faint:var(--s-600);
+        --line:#3C3C44; --line-strong:var(--s-800); --card-shadow:none;
+        --accent-soft:#182A4D; --accent-soft-line:#26467F; --chip-on:#FFFFFF;
+        --ok:#5FD79E; --ok-soft:#152C22; --ok-line:#1F4735;
+        --warn:var(--y-100); --warn-soft:#2E2412; --warn-line:#4A3A18; --bad:#FF877A;
+      }
+    }
+    :root[data-theme="dark"]{
+      --ground:var(--main); --surface:#2A2A30; --surface-alt:#232329;
+      --text:#FFFFFF; --text-muted:var(--s-500); --text-faint:var(--s-600);
+      --line:#3C3C44; --line-strong:var(--s-800); --card-shadow:none;
+      --accent-soft:#182A4D; --accent-soft-line:#26467F; --chip-on:#FFFFFF;
+      --ok:#5FD79E; --ok-soft:#152C22; --ok-line:#1F4735;
+      --warn:var(--y-100); --warn-soft:#2E2412; --warn-line:#4A3A18; --bad:#FF877A;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{font-family:var(--font);background:var(--ground);color:var(--text);min-height:100vh;
+      display:flex;flex-direction:column;font-size:var(--t-400);-webkit-font-smoothing:antialiased}
+    .hidden{display:none !important}
+    .num{font-variant-numeric:tabular-nums}
+
+    .wrap{width:100%;max-width:680px;margin:0 auto;padding:0 var(--gap-lg)}
+    .wrap-wide{width:100%;max-width:1040px;margin:0 auto;padding:0 var(--gap-lg)}
+    main{flex:1}
+    .stack{display:flex;flex-direction:column;gap:var(--gap-md)}
+    .stack-lg{display:flex;flex-direction:column;gap:var(--gap-xl)}
+
+    header{background:var(--ground);border-bottom:var(--bw) solid var(--line)}
+    .hd{height:64px;display:flex;align-items:center;gap:var(--gap-md)}
+    .logo{font-weight:var(--w-bold);font-size:var(--t-600);letter-spacing:-.02em;background:none;border:0;color:var(--text);cursor:pointer;padding:0;font-family:var(--font)}
+    .logo span{color:var(--p-600)}
+    .hd-sub{font-size:var(--t-400);color:var(--text-muted);padding-left:var(--gap-md);border-left:var(--bw) solid var(--line-strong)}
+    .hd-tag{margin-left:auto;font-size:var(--t-300);font-weight:var(--w-medium);color:var(--text-muted)}
+    footer{background:var(--main);margin-top:auto;padding:var(--gap-2xl) 0}
+    footer p{margin:var(--gap-xs) 0 0;font-size:var(--t-300);color:var(--s-600)}
+    .footer-logo{color:#fff}
+
+    h1,h2,h3{margin:0;text-wrap:balance}
+    .eyebrow{font-size:var(--t-300);font-weight:var(--w-bold);text-transform:uppercase;letter-spacing:.09em;color:var(--text-muted);margin:0 0 var(--gap-md)}
+    .lede{color:var(--text-muted);font-size:var(--t-400);line-height:1.55;margin:var(--gap-xs) 0 0}
+    .tiny{font-size:var(--t-300);color:var(--text-muted);line-height:1.55}
+
+    .card{background:var(--surface);border:var(--bw) solid var(--line-strong);border-radius:var(--radius-card);padding:var(--gap-xl);box-shadow:var(--card-shadow)}
+    @media(min-width:600px){.card-lg{padding:var(--gap-2xl)}}
+
+    .row{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-md);padding:var(--gap-md) 0;border-bottom:var(--bw) solid var(--line)}
+    .row:last-child{border-bottom:0}
+    .row:first-child{padding-top:0}
+    .row-l{display:flex;align-items:center;gap:var(--gap-md);min-width:0}
+    .icon-chip{width:36px;height:36px;border-radius:var(--radius-default);background:var(--accent-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .icon-chip svg{width:18px;height:18px;color:var(--accent)}
+
+    button{font-family:var(--font)}
+    .btn{display:flex;align-items:center;justify-content:center;width:100%;height:var(--btn-h);border:0;border-radius:var(--radius-btn);padding:0 var(--gap-lg);font-size:var(--t-500);font-weight:var(--w-bold);cursor:pointer;transition:background .15s,border-color .15s}
+    .btn-primary{background:var(--accent);color:var(--on-accent)}
+    .btn-primary:hover{background:var(--accent-hover)}
+    .btn-primary:disabled{background:var(--p-300);cursor:not-allowed}
+    :root[data-theme="dark"] .btn-primary:disabled{background:var(--s-800);color:var(--s-600)}
+    .btn-green{background:var(--g-700);color:#fff}
+    .btn-green:hover{background:var(--g-800)}
+    .btn-ghost{background:var(--surface);color:var(--text);border:var(--bw) solid var(--line-strong)}
+    .btn-ghost:hover{background:var(--surface-alt)}
+    .btn-dash{background:transparent;color:var(--accent);border:1.5px dashed var(--line-strong);font-size:var(--t-400)}
+    .btn-dash:hover{background:var(--surface-alt)}
+    .btn-row{display:flex;gap:var(--gap-md)}
+    .btn-row .btn{width:auto}
+    .btn-row .grow{flex:1}
+    .btn-sm{height:34px;width:auto;padding:0 var(--gap-md);font-size:var(--t-300);font-weight:var(--w-bold);border-radius:var(--radius-btn);border:0;cursor:pointer;display:inline-flex;align-items:center}
+    .pill-blue{background:var(--accent);color:var(--on-accent)}
+    .pill-plain{background:var(--surface);color:var(--text);border:var(--bw) solid var(--line-strong)}
+
+    .chips{display:flex;flex-wrap:wrap;gap:var(--gap-default)}
+    .chip{height:40px;padding:0 var(--gap-lg);border-radius:var(--radius-full);font-size:var(--t-400);font-weight:var(--w-medium);cursor:pointer;background:var(--surface);color:var(--text);border:var(--bw) solid var(--line-strong);transition:background .15s,color .15s,border-color .15s}
+    .chip[aria-pressed="true"]{background:var(--chip-on);color:var(--ground);border-color:var(--chip-on)}
+
+    .seg{display:inline-flex;gap:var(--gap-xs);padding:var(--gap-xs);border-radius:var(--radius-btn);background:var(--s-200)}
+    :root[data-theme="dark"] .seg{background:#3C3C44}
+    .seg button{border:0;cursor:pointer;font-family:var(--font);font-size:var(--t-400);font-weight:var(--w-medium);padding:9px 20px;border-radius:var(--radius-default);background:transparent;color:var(--text);transition:background .15s,color .15s}
+    .seg button[aria-pressed="true"]{background:var(--chip-on);color:var(--ground)}
+
+    .sel{display:block;width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--line-strong);border-radius:var(--radius-btn);padding:var(--gap-lg);cursor:pointer;transition:border-color .15s,background .15s}
+    .sel[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+    .sel-hd{display:flex;align-items:center;justify-content:space-between;gap:var(--gap-default)}
+    .sel-title{font-size:var(--t-500);font-weight:var(--w-bold)}
+    .box{width:22px;height:22px;border-radius:var(--radius-sm);border:1.5px solid var(--line-strong);background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .sel[aria-pressed="true"] .box{background:var(--accent);border-color:var(--accent)}
+    .box svg{width:14px;height:14px;color:var(--on-accent)}
+
+    label{display:block;font-size:var(--t-400);font-weight:var(--w-medium);margin-bottom:var(--gap-default);color:var(--text)}
+    .field{width:100%;height:var(--btn-h);border:var(--bw) solid var(--line-strong);border-radius:var(--radius-btn);padding:0 var(--gap-lg);font-size:var(--t-500);font-family:var(--font);color:var(--text);background:var(--surface);outline:none;transition:border-color .15s,box-shadow .15s}
+    .field:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft-line)}
+    .field.bad{border-color:var(--bad)}
+    select.field{appearance:none;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%2385899B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right var(--gap-lg) center;padding-right:44px}
+    .prefix{position:relative}
+    .prefix>span{position:absolute;left:var(--gap-lg);top:50%;transform:translateY(-50%);font-size:var(--t-400);font-weight:var(--w-medium);color:var(--text-faint);pointer-events:none}
+    .prefix .field{padding-left:56px}
+    .err{display:none;color:var(--bad);font-size:var(--t-300);margin-top:var(--gap-xs)}
+    .err.show{display:block}
+    .hint{font-size:var(--t-300);color:var(--text-muted);margin:var(--gap-xs) 0 0}
+
+    .note{border-radius:var(--radius-btn);padding:var(--gap-lg)}
+    .note-amber{background:var(--warn-soft);border:var(--bw) solid var(--warn-line);color:var(--warn)}
+    .note-blue{background:var(--accent-soft);border:var(--bw) solid var(--accent-soft-line)}
+    .note-green{background:var(--ok-soft);border:var(--bw) solid var(--ok-line)}
+    .note-plain{background:var(--surface-alt);border:var(--bw) solid var(--line)}
+    .note ul{margin:var(--gap-default) 0 0;padding-left:18px}
+    .note li{font-size:var(--t-300);line-height:1.6;margin-bottom:var(--gap-xs)}
+
+    .steps{display:flex;align-items:flex-start;margin-bottom:var(--gap-xl)}
+    .step{display:flex;align-items:center}
+    .step.grow{flex:1}
+    .step-i{display:flex;flex-direction:column;align-items:center;gap:var(--gap-default)}
+    .dot{width:30px;height:30px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:var(--t-400);font-weight:var(--w-bold);background:var(--line-strong);color:var(--text-muted)}
+    .dot.on{background:var(--accent);color:var(--on-accent);box-shadow:0 0 0 4px var(--accent-soft-line)}
+    .dot.done{background:var(--accent);color:var(--on-accent)}
+    .dot svg{width:15px;height:15px}
+    .step-lb{font-size:var(--t-200);font-weight:var(--w-medium);color:var(--text-muted);white-space:nowrap}
+    .step-lb.on{color:var(--accent)}
+    .bar{flex:1;height:2px;background:var(--line-strong);margin:0 var(--gap-default);border-radius:2px}
+    .bar.on{background:var(--accent)}
+    @media(min-width:520px){.step-lb{font-size:var(--t-300)}}
+
+    .slab{border-radius:var(--radius-card);padding:var(--gap-xl);background:var(--p-600);color:#fff}
+    .slab .k{font-size:var(--t-400);color:var(--p-200)}
+    .slab .v{font-size:var(--t-900);font-weight:var(--w-bold);letter-spacing:-.02em;margin:var(--gap-xs) 0 var(--gap-default)}
+    .slab .s{font-size:var(--t-300);color:var(--p-200)}
+
+    .hero{background:var(--ground);color:var(--text);padding:52px 0 36px;text-align:center}
+    .hero .eyebrow{color:var(--text);font-size:var(--t-500);font-weight:var(--w-bold);text-transform:none;letter-spacing:normal;margin-bottom:var(--gap-md)}
+    .hero h1{font-size:var(--t-800);font-weight:var(--w-bold);line-height:1.2}
+    .hero p{color:var(--text-muted);font-size:var(--t-500);line-height:1.5;max-width:34rem;margin:var(--gap-lg) auto 0}
+    @media(min-width:640px){.hero h1{font-size:var(--t-1100);line-height:52px}}
+
+    .grid3{display:grid;grid-template-columns:1fr;gap:var(--gap-md)}
+    @media(min-width:640px){.grid3{grid-template-columns:repeat(2,1fr);max-width:668px;margin-inline:auto}}
+    .grid4{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-default)}
+    @media(min-width:720px){.grid4{grid-template-columns:repeat(4,1fr)}}
+
+    .tag{font-size:var(--t-300);font-weight:var(--w-bold);padding:5px 10px;border-radius:var(--radius-full);background:var(--accent-soft);color:var(--accent)}
+    .tag-inc{background:var(--ok-soft);color:var(--ok)}
+
+    /* Package tier cards — Bronze / Silver / Gold / Platinum */
+    .tier{position:relative;display:block;width:100%;text-align:left;cursor:pointer;background:var(--surface);
+      border:1.5px solid var(--line-strong);border-radius:var(--radius-lg);padding:var(--gap-lg);transition:border-color .15s,background .15s}
+    .tier[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+    .tier .tname{display:flex;align-items:center;gap:7px;font-size:var(--t-400);font-weight:var(--w-bold)}
+    .tier .swatch{width:11px;height:11px;border-radius:var(--radius-full);flex-shrink:0}
+    .tier .tlimit{font-size:var(--t-600);font-weight:var(--w-bold);margin:var(--gap-default) 0 2px;letter-spacing:-.01em}
+    .tier .tsub{font-size:var(--t-300);color:var(--text-muted)}
+    .tier .tprice{font-size:var(--t-400);font-weight:var(--w-bold);color:var(--accent);margin-top:var(--gap-default)}
+    .tier .best{position:absolute;top:-9px;left:var(--gap-lg);font-size:var(--t-200);font-weight:var(--w-bold);
+      text-transform:uppercase;letter-spacing:.07em;background:var(--accent);color:#fff;padding:3px 8px;border-radius:var(--radius-full)}
+
+    /* Comparison table */
+    .cmp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    table.cmp{width:100%;min-width:560px;border-collapse:collapse;font-size:var(--t-300)}
+    table.cmp th,table.cmp td{padding:10px 8px;text-align:center;border-bottom:var(--bw) solid var(--line)}
+    table.cmp th:first-child,table.cmp td:first-child{text-align:left;padding-left:0;min-width:210px}
+    table.cmp thead th{font-size:var(--t-300);font-weight:var(--w-bold);border-bottom:1.5px solid var(--line-strong)}
+    table.cmp thead th.on{color:var(--accent)}
+    table.cmp td.on{background:var(--accent-soft)}
+    table.cmp tbody tr:last-child td{border-bottom:0}
+    .yes{color:var(--ok);font-weight:var(--w-bold)}
+    .no{color:var(--s-400)}
+
+    /* Payment */
+    .pay{display:flex;align-items:center;gap:var(--gap-lg);width:100%;text-align:left;cursor:pointer;background:var(--surface);
+      border:1.5px solid var(--line-strong);border-radius:var(--radius-btn);padding:var(--gap-lg);transition:border-color .15s,background .15s}
+    .pay:hover{border-color:var(--s-400)}
+    .pay[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+    .pay .mark{width:56px;height:36px;border-radius:var(--radius-default);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:var(--w-bold);font-size:var(--t-300)}
+    .pay .radio{width:22px;height:22px;border-radius:var(--radius-full);border:1.5px solid var(--line-strong);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+    .pay[aria-pressed="true"] .radio{border-color:var(--accent)}
+    .pay[aria-pressed="true"] .radio::after{content:'';width:11px;height:11px;border-radius:var(--radius-full);background:var(--accent)}
+    .spin{width:40px;height:40px;border-radius:var(--radius-full);border:3px solid var(--accent-soft-line);border-top-color:var(--accent);animation:sp .8s linear infinite;margin:0 auto}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    @media(prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}}
+    .grid2f{display:grid;grid-template-columns:1fr;gap:var(--gap-lg)}
+    @media(min-width:560px){.grid2f{grid-template-columns:1fr 1fr}}
+
+    /* Policy document */
+    .doc-bar{display:flex;gap:var(--gap-md);justify-content:space-between;margin-bottom:var(--gap-lg)}
+    .doc{background:var(--surface);border:var(--bw) solid var(--line-strong);border-radius:var(--radius-card);padding:32px;box-shadow:var(--card-shadow)}
+    @media(min-width:600px){.doc{padding:48px}}
+    .doc h1{font-size:var(--t-700);font-weight:var(--w-bold);letter-spacing:-.02em}
+    .doc h2{font-size:var(--t-300);font-weight:var(--w-bold);text-transform:uppercase;letter-spacing:.09em;color:var(--text-muted);margin:28px 0 10px}
+    .doc .dl{display:grid;grid-template-columns:1fr;gap:0}
+    .doc .dr{display:flex;justify-content:space-between;gap:var(--gap-lg);padding:9px 0;border-bottom:var(--bw) solid var(--line);font-size:var(--t-400)}
+    .doc .dr:last-child{border-bottom:0}
+    .doc .dr span:first-child{color:var(--text-muted)}
+    .doc .dr span:last-child{font-weight:var(--w-medium);text-align:right}
+    .doc .rule{height:2px;background:var(--text);margin:18px 0 0}
+    .doc ul{margin:8px 0 0;padding-left:18px}
+    .doc li{font-size:var(--t-300);line-height:1.7;color:var(--text-muted)}
+    .doclink{display:flex;align-items:center;gap:var(--gap-md);width:100%;text-align:left;cursor:pointer;
+      background:var(--surface);border:1.5px solid var(--accent);border-radius:var(--radius-btn);padding:var(--gap-lg);transition:background .15s}
+    .doclink:hover{background:var(--accent-soft)}
+    @media print{
+      header,footer,.doc-bar{display:none !important}
+      body{background:#fff}
+      .doc{border:0;box-shadow:none;padding:0}
+      .wrap{max-width:none;padding:0}
+    }
+
+    a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    @media(prefers-reduced-motion:reduce){*{transition:none !important}}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="wrap-wide hd">
+    <button class="logo" onclick="goHome()">Shory<span>.</span></button>
+    <span class="hd-sub">Animal Care</span>
+    <span class="hd-tag">V2 &middot; D1 veterinary network</span>
+  </div>
+</header>
+
+<main>
+
+<!-- ══════════════ HOME ══════════════ -->
+<div id="page-home">
+  <div class="hero">
+    <div class="wrap-wide">
+      <p class="eyebrow">In partnership with the D1 veterinary network</p>
+      <h1>Horses. Camels.<br />Covered properly.</h1>
+      <p>Four packages, from everyday care to the highest annual limits in the market. Treated at a D1 clinic? We settle the bill directly.</p>
+    </div>
+  </div>
+
+  <div class="wrap-wide" style="padding-bottom:56px">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:28px">
+      <div class="seg" id="contract-seg"></div>
+      <p class="tiny" id="mode-note" style="text-align:center;max-width:30rem;margin:0"></p>
+    </div>
+
+    <div class="grid3" id="species-cards"></div>
+
+    <!-- Direct billing -->
+    <div class="card" style="margin-top:var(--gap-xl)">
+      <div style="display:flex;align-items:flex-start;gap:var(--gap-lg);flex-wrap:wrap">
+        <div class="icon-chip" style="width:44px;height:44px;background:var(--ok-soft)">
+          <svg style="width:22px;height:22px;color:var(--ok)" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+        </div>
+        <div style="flex:1;min-width:240px">
+          <h3 style="font-size:var(--t-500);font-weight:var(--w-bold)">No claim forms at a D1 clinic</h3>
+          <p class="lede">Treatment at any clinic in the D1 network is billed straight to the insurer. You pay your excess at reception and walk out &mdash; nothing to claim back, no waiting for reimbursement.</p>
+          <p class="tiny" style="margin-top:var(--gap-default)">Prefer your own vet? You can still use any licensed practice in the UAE and claim it back, usually within five working days.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:var(--gap-md)">
+      <h3 style="font-size:var(--t-500);font-weight:var(--w-bold)">How the packages compare</h3>
+      <p class="tiny" style="margin:var(--gap-default) 0 var(--gap-lg)">Pick a species above to see its limits. Every package includes consultations, medication and third-party liability.</p>
+      <div class="grid4" id="tier-preview"></div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:var(--gap-xl);margin-top:var(--gap-2xl);padding-top:var(--gap-xl);border-top:var(--bw) solid var(--line)">
+      <span class="tiny" style="display:flex;align-items:center;gap:7px"><svg style="width:15px;height:15px;color:var(--accent)" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd"/></svg>Licensed by Central Bank of UAE &middot; Licence 287</span>
+      <span class="tiny" style="display:flex;align-items:center;gap:7px"><svg style="width:15px;height:15px;color:var(--accent)" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>4.9 stars &middot; 11,000+ reviews</span>
+      <span class="tiny" style="display:flex;align-items:center;gap:7px"><svg style="width:15px;height:15px;color:var(--accent)" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>Conventional &amp; Takaful available</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ WIZARD ══════════════ -->
+<div id="page-quote" class="hidden" style="padding:28px 0 56px">
+  <div class="wrap">
+    <div style="display:flex;align-items:center;gap:var(--gap-default);margin-bottom:var(--gap-xl)">
+      <button onclick="goHome()" style="background:none;border:0;color:var(--accent);font-size:var(--t-400);font-weight:var(--w-bold);cursor:pointer;padding:0;font-family:var(--font)">&larr; Back</button>
+      <span style="color:var(--text-faint)">/</span>
+      <span id="crumb" class="tiny"></span>
+    </div>
+    <div id="steps" class="steps"></div>
+    <div id="step-details" class="hidden stack"></div>
+    <div id="step-package" class="hidden"></div>
+    <div id="step-quote"   class="hidden"></div>
+    <div id="step-secure"  class="hidden"></div>
+  </div>
+</div>
+
+<div id="page-confirmation" class="hidden" style="padding:48px 0">
+  <div class="wrap" style="max-width:540px">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div id="conf-head" style="padding:28px 24px;text-align:center;color:#fff"></div>
+      <div id="conf-body" style="padding:22px" class="stack"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PAYMENT ══════════════ -->
+<div id="page-payment" class="hidden" style="padding:28px 0 56px">
+  <div class="wrap" style="max-width:560px">
+    <div id="pay-body"></div>
+  </div>
+</div>
+
+<!-- ══════════════ POLICY ISSUED ══════════════ -->
+<div id="page-policy" class="hidden" style="padding:48px 0">
+  <div class="wrap" style="max-width:540px">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div id="pol-head" style="padding:28px 24px;text-align:center;color:#fff;background:var(--g-700)"></div>
+      <div id="pol-body" style="padding:22px" class="stack"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ POLICY DOCUMENT ══════════════ -->
+<div id="page-document" class="hidden" style="padding:28px 0 56px">
+  <div class="wrap" style="max-width:760px">
+    <div class="doc-bar">
+      <button class="btn btn-ghost" style="width:auto" onclick="showPage('policy')">&larr; Back</button>
+      <button class="btn btn-primary" style="width:auto" onclick="window.print()">Print or save as PDF</button>
+    </div>
+    <div id="doc-body" class="doc"></div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <div class="wrap-wide" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--gap-lg)">
+    <div>
+      <span class="logo footer-logo" style="cursor:default">Shory<span>.</span></span>
+      <p style="color:var(--s-500)">Shory Insurance Brokers LLC &middot; Licensed by Central Bank of UAE &middot; Licence No. 287</p>
+      <p>Distributed through the D1 veterinary network &middot; Conventional and Takaful</p>
+    </div>
+    <div style="text-align:right">
+      <p>&copy; 2026 Shory. All rights reserved.</p>
+      <p>V2 concept &middot; indicative pricing, subject to insurer appetite</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════════
+const SUPABASE_URL   = ''
+const SUPABASE_ANON  = ''
+const REFERRAL_EMAIL = 'corporate@shory.com'
+
+// ═══════════════════════════════════════════════════════════════
+// CONTRACT BASIS — Conventional vs Takaful.
+// Takaful changes the contract and the language, not the price.
+// ═══════════════════════════════════════════════════════════════
+const CONTRACTS = {
+  takaful:{
+    id:'takaful', label:'Takaful', factor:1.00,
+    premium:'Contribution', premiumLower:'contribution', holder:'Participant', carrier:'Takaful operator',
+    note:'Shariah-compliant, and our default. Your contribution goes into a risk fund run on your behalf by the Takaful operator, and any year-end surplus is shared among participants. Same cover, same price.',
+  },
+  conventional:{
+    id:'conventional', label:'Conventional', factor:1.00,
+    premium:'Premium', premiumLower:'premium', holder:'Policyholder', carrier:'insurer',
+    note:'A standard insurance contract with a licensed UAE insurer.',
+  },
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TREATMENT NETWORK — the D1 direct-billing lever
+// ═══════════════════════════════════════════════════════════════
+const NETWORKS = {
+  d1:{ id:'d1', label:'D1 veterinary network', factor:0.90,
+       head:'Direct billing', note:'Billed straight to us. You pay only your excess at reception.' },
+  any:{ id:'any', label:'Any licensed UAE vet', factor:1.00,
+       head:'Pay and claim', note:'Settle with the clinic, send us the invoice, reimbursed in about five working days.' },
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SPECIES
+// ═══════════════════════════════════════════════════════════════
+const SPECIES = {
+  pet:  {label:'Pets',   one:'pet',   many:'pets',   Title:'Pet',   valueBased:false,
+         blurb:'Dogs and cats. Everyday care through to surgery, chronic conditions and overseas travel.'},
+  horse:{label:'Horses', one:'horse', many:'horses', Title:'Horse', valueBased:true,
+         blurb:'Leisure to competition. Vet fees plus mortality at agreed value.'},
+  camel:{label:'Camels', one:'camel', many:'camels', Title:'Camel', valueBased:true,
+         blurb:'Private herds, milking, show and racing stock. Vet fees plus mortality.'},
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PACKAGES — Bronze / Silver / Gold / Platinum.
+// Annual vet limits replace the old fixed 10k/25k/50k tiers and
+// run well above the usual UAE market ceilings.
+// ═══════════════════════════════════════════════════════════════
+const TIER_META = {
+  bronze:  {name:'Bronze',   swatch:'#995934'},
+  silver:  {name:'Silver',   swatch:'#B2B4C0'},
+  gold:    {name:'Gold',     swatch:'#CBA344'},
+  platinum:{name:'Platinum', swatch:'#578FFF'},
+}
+
+const PACKAGES = {
+  pet:[
+    {id:'bronze',  vet:15000,  tpl:250000,   excess:'20%', death:0,     base:780,  popular:false},
+    {id:'silver',  vet:30000,  tpl:500000,   excess:'15%', death:8000,  base:1290, popular:false},
+    {id:'gold',    vet:60000,  tpl:1000000,  excess:'10%', death:15000, base:2140, popular:true },
+    {id:'platinum',vet:100000, tpl:2000000,  excess:'Nil', death:25000, base:3260, popular:false},
+  ],
+  horse:[
+    {id:'bronze',  vet:25000,  tpl:1000000,  excess:'20%', death:'agreed', base:1450, popular:false},
+    {id:'silver',  vet:60000,  tpl:2500000,  excess:'15%', death:'agreed', base:2380, popular:false},
+    {id:'gold',    vet:120000, tpl:5000000,  excess:'10%', death:'agreed', base:3900, popular:true },
+    {id:'platinum',vet:250000, tpl:10000000, excess:'Nil', death:'agreed', base:6100, popular:false},
+  ],
+  camel:[
+    {id:'bronze',  vet:20000,  tpl:1000000,  excess:'20%', death:'agreed', base:1180, popular:false},
+    {id:'silver',  vet:45000,  tpl:2500000,  excess:'15%', death:'agreed', base:1940, popular:false},
+    {id:'gold',    vet:90000,  tpl:5000000,  excess:'10%', death:'agreed', base:3150, popular:true },
+    {id:'platinum',vet:180000, tpl:10000000, excess:'Nil', death:'agreed', base:4850, popular:false},
+  ],
+}
+
+// Which benefits sit at which tier. Order is the comparison table order.
+// `addon` (flat AED) or `addonPct` (of agreed value) means it can be bought
+// at cost on a lower package instead of trading up.
+// `scope` — 'animal' prices per animal, 'policy' prices once for the owner.
+const BENEFITS = {
+  pet:[
+    {id:'consult', label:'Consultations &amp; examinations',       from:'bronze'},
+    {id:'meds',    label:'Medication &amp; prescription diet',     from:'bronze'},
+    {id:'vacc',    label:'Vaccinations &amp; annual health check', from:'bronze'},
+    {id:'tpl',     label:'Third-party liability',                  from:'bronze', limit:true, scope:'policy'},
+    {id:'diag',    label:'Diagnostics, imaging &amp; lab work',    from:'silver', addon:420,  scope:'animal', cap:"AED 8,000 a year", note:'X-ray, ultrasound, bloods and pathology.'},
+    {id:'surg',    label:'Surgery &amp; hospitalisation',          from:'silver', addon:680,  scope:'animal', cap:"AED 20,000 a year", note:'Operating theatre, anaesthesia and inpatient care.'},
+    {id:'death',   label:'Death from accident or illness',         from:'silver', death:true, addon:260, scope:'animal', cap:"AED 8,000"},
+    {id:'theft',   label:'Theft or straying',                      from:'silver', addon:180,  scope:'animal', cap:"AED 8,000", note:'Paid if not recovered within 90 days.'},
+    {id:'dental',  label:'Dental illness &amp; extractions',       from:'gold',   addon:240,  scope:'animal', cap:"AED 3,000 a year"},
+    {id:'chronic', label:'Chronic &amp; recurring conditions',     from:'gold',   addon:590,  scope:'animal', cap:"AED 15,000 a year", note:'Conditions that come back year after year.'},
+    {id:'board',   label:'Boarding if you are hospitalised',       from:'gold',   addon:150,  scope:'animal', cap:"AED 150 a day, to AED 3,000"},
+    {id:'behav',   label:'Behavioural therapy',                    from:'platinum', addon:210, scope:'animal', cap:"AED 3,000 a year"},
+    {id:'comp',    label:'Complementary &amp; rehab therapy',      from:'platinum', addon:280, scope:'animal', cap:"AED 4,000 a year", note:'Hydrotherapy, physiotherapy and acupuncture.'},
+    {id:'travel',  label:'Overseas travel &amp; transit',          from:'platinum', addon:340, scope:'animal', cap:"AED 10,000, 90 days a trip"},
+  ],
+  horse:[
+    {id:'consult', label:'Consultations &amp; examinations',       from:'bronze'},
+    {id:'colic',   label:'Emergency colic surgery',                from:'bronze'},
+    {id:'death',   label:'Death, theft or straying',               from:'bronze', death:true},
+    {id:'euth',    label:'Emergency euthanasia &amp; disposal',    from:'bronze'},
+    {id:'tpl',     label:'Third-party liability',                  from:'bronze', limit:true, scope:'policy'},
+    {id:'diag',    label:'Diagnostics, imaging &amp; lab work',    from:'silver', addon:680,  scope:'animal', cap:"AED 15,000 a year", note:'Radiography, ultrasound, scintigraphy and bloods.'},
+    {id:'surg',    label:'Surgery &amp; hospitalisation',          from:'silver', addon:1150, scope:'animal', cap:"AED 40,000 a year", note:'Operating theatre, anaesthesia and inpatient care.'},
+    {id:'chronic', label:'Chronic &amp; recurring conditions',     from:'gold',   addon:940,  scope:'animal', cap:"AED 25,000 a year"},
+    {id:'refvet',  label:'Referral vet — transport &amp; livery',  from:'gold',   addon:180,  scope:'animal', cap:"AED 2,500", note:'Getting your animal to a referral clinic and keeping it there.'},
+    {id:'tack',    label:'Saddlery &amp; tack',                    from:'gold',   addon:420,  scope:'animal', cap:"AED 15,000 &middot; AED 4,000 single item", note:'Theft needs forcible entry.'},
+    {id:'transit', label:'Transit within the GCC',                 from:'gold',   addon:380,  scope:'animal', cap:"AED 25,000 a journey"},
+    {id:'lou',     label:'Loss of use',                            from:'platinum', addonPct:0.012, scope:'animal', cap:"60% of agreed value", note:'Permanent incapacity for the insured activity. Needs a microchip or freeze-mark.'},
+    {id:'comp',    label:'Complementary &amp; rehab therapy',      from:'platinum', addon:460, scope:'animal', cap:"AED 8,000 a year"},
+    {id:'pa',      label:'Personal accident (rider)',              from:'platinum', addon:320, scope:'policy', cap:"AED 75,000", note:'You must be aged 5 to 75 at the date of the accident.'},
+  ],
+  camel:[
+    {id:'consult', label:'Consultations &amp; examinations',       from:'bronze'},
+    {id:'surgem',  label:'Emergency surgery',                      from:'bronze'},
+    {id:'death',   label:'Death, theft or straying',               from:'bronze', death:true},
+    {id:'euth',    label:'Emergency euthanasia &amp; disposal',    from:'bronze'},
+    {id:'tpl',     label:'Third-party liability',                  from:'bronze', limit:true, scope:'policy'},
+    {id:'diag',    label:'Diagnostics, imaging &amp; lab work',    from:'silver', addon:520,  scope:'animal', cap:"AED 12,000 a year"},
+    {id:'surg',    label:'Surgery &amp; hospitalisation',          from:'silver', addon:880,  scope:'animal', cap:"AED 30,000 a year"},
+    {id:'screen',  label:'Herd disease screening',                 from:'silver', addon:300,  scope:'animal', cap:"AED 6,000 a year"},
+    {id:'chronic', label:'Chronic &amp; recurring conditions',     from:'gold',   addon:740,  scope:'animal', cap:"AED 20,000 a year"},
+    {id:'refvet',  label:'Referral clinic transport',              from:'gold',   addon:180,  scope:'animal', cap:"AED 2,500"},
+    {id:'transit', label:'Transit within the GCC',                 from:'gold',   addon:380,  scope:'animal', cap:"AED 25,000 a journey"},
+    {id:'breed',   label:'Breeding &amp; fertility cover',         from:'platinum', addonPct:0.010, scope:'animal', cap:"50% of agreed value"},
+    {id:'comp',    label:'Complementary &amp; rehab therapy',      from:'platinum', addon:380, scope:'animal', cap:"AED 6,000 a year"},
+    {id:'show',    label:'Show &amp; competition extension',       from:'platinum', addon:420, scope:'animal', cap:"AED 20,000 a season"},
+  ],
+}
+// Benefits missing from the chosen tier that can still be bought at cost
+const availableAddons = (species,tier,scope) =>
+  BENEFITS[species].filter(b =>
+    (b.addon||b.addonPct) && (b.scope||'animal')===scope && tierIndex(tier) < tierIndex(b.from))
+const addonPrice = (b,value) => b.addonPct ? (Number(value)||0)*b.addonPct : b.addon
+const TIER_ORDER=['bronze','silver','gold','platinum']
+const tierIndex = id => TIER_ORDER.indexOf(id)
+
+// ═══════════════════════════════════════════════════════════════
+// RATING FACTORS  (internal — never shown)
+// ═══════════════════════════════════════════════════════════════
+const PET_KINDS=[
+  {id:'cat',    label:'Cat',                          factor:0.85},
+  {id:'dog-s',  label:'Dog — small, up to 10 kg',     factor:1.00},
+  {id:'dog-m',  label:'Dog — medium, 10–25 kg',       factor:1.15},
+  {id:'dog-l',  label:'Dog — large, 25–45 kg',        factor:1.35},
+  {id:'dog-xl', label:'Dog — giant, over 45 kg',      factor:1.60},
+]
+const PET_AGE=[
+  {min:0, max:0,  factor:1.20, label:'Under 1'},
+  {min:1, max:2,  factor:1.00, label:'1–2 years'},
+  {min:3, max:5,  factor:1.05, label:'3–5 years'},
+  {min:6, max:8,  factor:1.35, label:'6–8 years'},
+  {min:9, max:11, factor:1.80, label:'9–11 years'},
+  {min:12,max:14, factor:2.40, label:'12–14 years'},
+]
+const EQUINE_AGE=[
+  {min:1, max:2,  factor:1.15, label:'1–2 years'},
+  {min:3, max:7,  factor:1.00, label:'3–7 years'},
+  {min:8, max:11, factor:1.10, label:'8–11 years'},
+  {min:12,max:14, factor:1.30, label:'12–14 years'},
+  {min:15,max:19, factor:1.70, label:'15–19 years'},
+]
+const MORTALITY_RATES={ horse:{one:0.050,two:0.060}, camel:{one:0.050,two:0.055} }
+
+const ACTIVITIES={
+  horse:{
+    one:['Hacking','Dressage','Showing','Show jumping','Riding club','Horses at grass','Retired horses','Driving','Western riding'],
+    two:['Advanced eventing','Cross country','Endurance riding','Polo','Polocrosse','Hunter trials','Arabian racing','Trotting racing','Point-to-point','Vaulting'],
+  },
+  camel:{
+    one:['Private herd','Milking / dairy','Tourism riding','Trekking','Showing'],
+    two:['Mazayna beauty competition','Racing','Festival parade work','Working / transport herds'],
+  },
+}
+const SPECIALIST_USES={
+  horse:['Arabian racing','Trotting racing','Point-to-point'],
+  camel:['Racing','Mazayna beauty competition'],
+}
+
+const EMIRATES=['Abu Dhabi','Dubai','Sharjah','Ajman','Umm Al Quwain','Ras Al Khaimah','Fujairah']
+const MAX_VALUE_ONLINE=500000, MAX_ANIMALS=6, MIN_PREMIUM=650
+
+// ═══════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════
+const fmtAED  = v => 'AED '+Math.round(Number(v)).toLocaleString('en-AE')
+const fmtAED2 = v => 'AED '+Number(v).toLocaleString('en-AE',{minimumFractionDigits:2,maximumFractionDigits:2})
+const fmtShort= v => v>=1000000 ? 'AED '+(v/1000000)+'m' : 'AED '+(v/1000)+'k'
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+const uid = () => 'a'+Math.random().toString(36).substr(2,7)
+const genRef = () => 'SH-AC-'+Date.now().toString(36).toUpperCase().slice(-5)+'-'+Math.random().toString(36).substr(2,3).toUpperCase()
+const todayISO = () => new Date().toISOString().split('T')[0]
+function plusDays(n){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().split('T')[0]}
+function ageFromDob(dob){
+  if(!dob) return null
+  const d=new Date(dob); if(isNaN(d)) return null
+  const t=new Date(); let y=t.getFullYear()-d.getFullYear()
+  const m=t.getMonth()-d.getMonth()
+  if(m<0||(m===0&&t.getDate()<d.getDate())) y--
+  return y
+}
+function ageWeeks(dob){
+  const d=new Date(dob); if(isNaN(d)) return null
+  return Math.floor((Date.now()-d.getTime())/(7*24*3600*1000))
+}
+const fmtDate = iso => iso ? isoToDMY(iso) : '—'
+
+// ── DD/MM/YYYY text dates. Native date inputs follow the browser
+//    locale, so we mask a plain text field instead.
+function isoToDMY(iso){
+  if(!iso) return ''
+  const p=String(iso).split('-'); if(p.length!==3) return ''
+  return p[2]+'/'+p[1]+'/'+p[0]
+}
+function dmyToIso(s){
+  const m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(String(s||'').trim())
+  if(!m) return ''
+  const d=+m[1], mo=+m[2], y=+m[3]
+  const dt=new Date(y,mo-1,d)
+  if(dt.getFullYear()!==y||dt.getMonth()!==mo-1||dt.getDate()!==d) return ''
+  return m[3]+'-'+m[2]+'-'+m[1]
+}
+function maskDate(el){
+  if(!el||el.dataset.masked) return
+  el.dataset.masked='1'
+  el.addEventListener('input',()=>{
+    const v=el.value.replace(/\D/g,'').slice(0,8)
+    let out=v.slice(0,2)
+    if(v.length>2) out+='/'+v.slice(2,4)
+    if(v.length>4) out+='/'+v.slice(4,8)
+    el.value=out
+  })
+}
+// ── Thousands separators while typing
+const parseMoney = s => Number(String(s==null?'':s).replace(/[^\d]/g,''))||0
+function maskMoney(el){
+  if(!el||el.dataset.masked) return
+  el.dataset.masked='1'
+  const run=()=>{
+    const d=el.value.replace(/\D/g,'')
+    el.value = d ? Number(d).toLocaleString('en-AE') : ''
+  }
+  el.addEventListener('input',run)
+  run()
+}
+const moneyDisplay = v => v ? Number(parseMoney(v)).toLocaleString('en-AE') : ''
+const futureISO = iso => iso && iso > todayISO()
+const pastISO   = iso => iso && iso < todayISO()
+const CHECK='<svg fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'
+
+function ageBandFor(species,age){
+  const t = species==='pet' ? PET_AGE : EQUINE_AGE
+  return t.find(b=>age>=b.min&&age<=b.max)||null
+}
+
+const ICONS={
+  pet:'<path d="M4.5 12.5c-1.1 0-2-1.1-2-2.5s.9-2.5 2-2.5 2 1.1 2 2.5-.9 2.5-2 2.5zm15 0c-1.1 0-2-1.1-2-2.5s.9-2.5 2-2.5 2 1.1 2 2.5-.9 2.5-2 2.5zM9 7.5C7.9 7.5 7 6.2 7 4.75S7.9 2 9 2s2 1.3 2 2.75S10.1 7.5 9 7.5zm6 0c-1.1 0-2-1.3-2-2.75S13.9 2 15 2s2 1.3 2 2.75S16.1 7.5 15 7.5zM12 10c3 0 5.5 2.6 5.5 5.6 0 2.4-1.6 4.4-3.6 4.4-.8 0-1.4-.3-1.9-.3s-1.1.3-1.9.3c-2 0-3.6-2-3.6-4.4C6.5 12.6 9 10 12 10z"/>',
+  horse:'<path d="M8.5 21v-1.8c0-3 1.1-5.6 3.1-7.4L10 10.2l-2 2-2.4-2.4 3.9-3.9c1-1 2.3-1.7 3.7-1.9L12.4 2l3.1 2.1c2.3.7 4 2.9 4 5.6V21"/><circle cx="16.2" cy="7.8" r=".7" fill="currentColor" stroke="none"/>',
+  camel:'<path d="M2.5 20v-2.5c0-1.4 1.1-2.5 2.5-2.5s2.5 1.1 2.5 2.5c0-2.8 1.6-5 3.8-5s3.7 2.2 3.7 5"/><path d="M15 17.5c0-1.4 1.1-2.5 2.5-2.5s2.5 1.1 2.5 2.5V20"/><path d="M20 15.5V8.2C20 6.4 18.6 5 16.8 5h-1.3"/><circle cx="16.9" cy="6.6" r=".65" fill="currentColor" stroke="none"/>',
+}
+const svgFor = (sp,size) => '<svg style="width:'+size+'px;height:'+size+'px;color:var(--accent)" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">'+ICONS[sp]+'</svg>'
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+const blankAnimal = () => ({id:uid(),name:'',dob:'',microchip:'',kind:'',breed:'',neutered:null,
+  value:'',activityType:null,activity:'',health:'yes',owner:'yes',existing:'no',
+  condWhat:'',condWhen:'',condStatus:'',condVet:''})
+// Whether this animal's disclosed condition has enough detail to assess
+const condComplete = a => a.existing!=='yes' || (a.condWhat && a.condWhen && a.condStatus)
+const OWNER_MODES=[
+  {id:'individual',label:'Individual',    note:'For animals you own yourself. Add as many as you keep.'},
+  {id:'stable',    label:'Stable &amp; yard', note:'Running a yard, kennel or herd? We write it as one scheduled policy &mdash; start here and add every animal, and our team will price it together.'},
+]
+let ownerMode='individual'
+let contractBasis="takaful"
+let homeSpecies='horse'
+let state={}
+function resetState(species){
+  state={
+    species,
+    contract:contractBasis,
+    policy:{startDate:plusDays(1),emirate:"Dubai"},
+    animals:[], draft:null,
+    tier:'gold', network:'d1', addons:{},
+    quote:null, referral:null, contact:{}, ref:null,
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RATING
+// ═══════════════════════════════════════════════════════════════
+function rateAnimal(a){
+  const sp=state.species
+  const pkg=PACKAGES[sp].find(p=>p.id===state.tier)
+  const band=ageBandFor(sp,ageFromDob(a.dob))
+  if(!band) return null          // outside the online age bands — referral prices it
+  const net=NETWORKS[state.network], con=CONTRACTS[state.contract]
+  const kind = sp==='pet' ? PET_KINDS.find(k=>k.id===a.kind) : null
+  const kindF = kind?kind.factor:1
+
+  const care = pkg.base * band.factor * kindF * net.factor * con.factor
+  const lines=[{label:'Veterinary care &middot; '+TIER_META[state.tier].name,amount:care}]
+
+  let mortality=0
+  if(SPECIES[sp].valueBased){
+    const rate=MORTALITY_RATES[sp][a.activityType]
+    mortality=Number(a.value)*rate*band.factor*con.factor
+    lines.push({label:'Death, theft &amp; straying',amount:mortality})
+  }
+
+  // Add-ons bought at cost because the chosen package does not include them
+  availableAddons(sp,state.tier,'animal').forEach(b=>{
+    if(!state.addons[b.id]) return
+    lines.push({label:b.label+' <span style="color:var(--text-faint)">&middot; added</span>',
+                amount:addonPrice(b,a.value)*net.factor*con.factor})
+  })
+
+  return {animal:a,pkg,band,kind,care,mortality,lines,subtotal:lines.reduce((s,l)=>s+l.amount,0)}
+}
+function calcQuote(){
+  const perAnimal=state.animals.map(rateAnimal)
+  if(perAnimal.some(r=>!r)) return null
+  const nw=NETWORKS[state.network], con=CONTRACTS[state.contract]
+  // Owner-level add-ons price once for the whole policy
+  const policyLines=availableAddons(state.species,state.tier,'policy')
+    .filter(b=>state.addons[b.id])
+    .map(b=>({label:b.label,amount:addonPrice(b,0)*nw.factor*con.factor}))
+  const policyTotal=policyLines.reduce((s,l)=>s+l.amount,0)
+  const gross=perAnimal.reduce((s,r)=>s+r.subtotal,0)+policyTotal
+  const n=state.animals.length
+  const multi = n>=4?0.10 : n>=3?0.075 : n>=2?0.05 : 0
+  const multiAmt=gross*multi
+  const net=gross-multiAmt
+  return {perAnimal,policyLines,policyTotal,gross,multi,multiAmt,
+    total:Math.max(net,MIN_PREMIUM), mdpApplied:net<MIN_PREMIUM,
+    networkSaving: state.network==='d1' ? gross/0.90*0.10 : 0,
+    totalValue:state.animals.reduce((s,a)=>s+Number(a.value||0),0)}
+}
+
+// ═══════════════════════════════════════════════════════════════
+// REFERRAL RULES
+// ═══════════════════════════════════════════════════════════════
+function referralReasons(){
+  const r=[], sp=SPECIES[state.species]
+  state.animals.forEach(a=>{
+    const nm=a.name||'This '+sp.one, yrs=ageFromDob(a.dob)
+    if(state.species==='pet'){
+      const w=ageWeeks(a.dob)
+      if(w!==null&&w<8) r.push(nm+' is under eight weeks old, so cover cannot start yet.')
+      if(yrs!==null&&yrs>=15) r.push(nm+' is 15 or over, so our specialist team prices it individually.')
+    } else {
+      if(yrs!==null&&yrs<1) r.push(nm+' is a foal, so needs a foal veterinary certificate and individual underwriting.')
+      if(yrs!==null&&yrs>=20) r.push(nm+' is 20 or over, so illness cover is written individually.')
+      if(Number(a.value)>MAX_VALUE_ONLINE) r.push(nm+' is valued above '+fmtAED(MAX_VALUE_ONLINE)+', which needs a specialist underwriter.')
+      if(SPECIALIST_USES[state.species].includes(a.activity)) r.push(nm+' is used for '+a.activity.toLowerCase()+', which our specialist team underwrites.')
+    }
+    if(a.health==='no')   r.push(nm+' is not in sound health.')
+    if(a.existing==='yes')r.push(nm+' has a previously treated condition ('+(a.condWhat||'details given')+'). We would normally exclude that condition and cover everything else — an underwriter confirms the wording against your vet’s certificate.')
+    if(a.owner==='no')    r.push('You are not the sole owner of '+nm+', or it is leased, loaned or syndicated.')
+  })
+  if(state.animals.length>MAX_ANIMALS) r.push('More than '+MAX_ANIMALS+' animals are written as a single scheduled policy by our team.')
+  return [...new Set(r)]
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ROUTING
+// ═══════════════════════════════════════════════════════════════
+function showPage(p){
+  ;["home","quote","confirmation","payment","policy","document"].forEach(x=>document.getElementById('page-'+x).classList.toggle('hidden',x!==p))
+  window.scrollTo(0,0)
+}
+function showStep(n){
+  ;['details','package','quote','secure'].forEach(x=>document.getElementById('step-'+x).classList.toggle('hidden',x!==n))
+  window.scrollTo(0,0)
+}
+function goHome(){ showPage('home'); renderHome() }
+
+function renderSteps(cur){
+  const labels=['Your animals','Your package','Your quote','Secure it']
+  document.getElementById('steps').innerHTML=labels.map((lab,i)=>{
+    const done=i<cur, on=i===cur
+    const dot='<div class="dot '+(done?'done':on?'on':'')+'">'+(done?CHECK:(i+1))+'</div>'
+    const bar=i<labels.length-1?'<div class="bar '+(i<cur?'on':'')+'"></div>':''
+    return '<div class="step'+(i<labels.length-1?' grow':'')+'">'+
+      '<div class="step-i">'+dot+'<span class="step-lb '+((done||on)?'on':'')+'">'+lab+'</span></div>'+bar+'</div>'
+  }).join('')
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════════════════════════
+function renderHome(){
+  document.getElementById('contract-seg').innerHTML=
+    OWNER_MODES.map(m=>'<button data-mode="'+m.id+'" aria-pressed="'+(ownerMode===m.id)+'">'+m.label+'</button>').join('')
+
+  document.getElementById('species-cards').innerHTML=Object.entries(SPECIES).filter(([k])=>k!=='pet').map(([k,s])=>{
+    const on=homeSpecies===k
+    return '<div class="card" style="text-align:center;display:flex;flex-direction:column;padding:var(--gap-lg);'+
+      (on?'border-color:var(--accent);':'')+'">'+
+      '<h2 style="font-size:var(--t-500);font-weight:var(--w-bold);line-height:1.3">'+s.Title+'<br />Insurance</h2>'+
+      '<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:22px 0">'+
+        '<div style="width:96px;height:96px;border-radius:var(--radius-full);background:var(--accent-soft);display:flex;align-items:center;justify-content:center">'+svgFor(k,50)+'</div>'+
+      '</div>'+
+      '<p class="tiny" style="margin:0 0 var(--gap-lg);min-height:52px">'+s.blurb+'</p>'+
+      '<button class="btn btn-primary" onclick="startQuote(\''+k+'\')">Get a quote</button>'+
+      '<button class="btn btn-ghost" style="margin-top:var(--gap-default);height:38px;font-size:var(--t-300)" data-peek="'+k+'">'+(on?'Showing limits below':'See limits')+'</button>'+
+      '</div>'
+  }).join('')
+
+  renderTierPreview()
+
+  document.getElementById('mode-note').innerHTML=
+    (OWNER_MODES.find(m=>m.id===ownerMode)||{}).note||''
+
+  document.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>{
+    ownerMode=el.dataset.mode; renderHome()
+  }))
+  document.querySelectorAll('[data-peek]').forEach(el=>el.addEventListener('click',()=>{
+    homeSpecies=el.dataset.peek; renderHome()
+    document.getElementById('tier-preview').scrollIntoView({behavior:'smooth',block:'center'})
+  }))
+}
+
+function renderTierPreview(){
+  const sp=homeSpecies
+  document.getElementById('tier-preview').innerHTML=PACKAGES[sp].map(p=>{
+    const m=TIER_META[p.id]
+    return '<div class="tier" style="cursor:default">'+
+      (p.popular?'<span class="best">Most chosen</span>':'')+
+      '<div class="tname"><span class="swatch" style="background:'+m.swatch+'"></span>'+m.name+'</div>'+
+      '<div class="tlimit num">'+fmtShort(p.vet)+'</div>'+
+      '<div class="tsub">annual vet limit</div>'+
+      '<div class="tsub num" style="margin-top:var(--gap-default)">Liability '+fmtShort(p.tpl)+'</div>'+
+      '<div class="tsub num">Excess '+p.excess+'</div>'+
+    '</div>'
+  }).join('')
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STEP 1 — ANIMALS
+// ═══════════════════════════════════════════════════════════════
+function startQuote(species){
+  resetState(species)
+  document.getElementById('crumb').textContent=SPECIES[species].label+' &middot; '+CONTRACTS[state.contract].label
+  document.getElementById('crumb').innerHTML=SPECIES[species].label+' &middot; '+CONTRACTS[state.contract].label
+  state.draft=blankAnimal()
+  renderSteps(0); renderDetails(); showPage('quote'); showStep('details')
+}
+
+function renderDetails(){
+  const sp=SPECIES[state.species], p=state.policy
+
+  const policyCard='<div class="card card-lg">'+
+    '<p class="eyebrow">Policy details</p>'+
+    '<div class="stack-lg">'+
+      '<div><label for="p-start">When would you like cover to start?</label>'+
+        '<input id="p-start" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10" value="'+isoToDMY(p.startDate)+'" class="field num" />'+
+        '<p id="e-start" class="err">Enter a real date as DD/MM/YYYY, today or later</p></div>'+
+      '<div><label for="p-emirate">Which emirate do you live in?</label>'+
+        '<select id="p-emirate" class="field"><option value="">Please select&hellip;</option>'+
+        EMIRATES.map(e=>'<option value="'+e+'"'+(p.emirate===e?' selected':'')+'>'+e+'</option>').join('')+
+        '</select><p id="e-emirate" class="err">Please choose an emirate</p></div>'+
+    '</div></div>'
+
+  const list=state.animals.length ? '<div class="card">'+state.animals.map(a=>{
+    const yrs=ageFromDob(a.dob)
+    const meta = state.species==='pet'
+      ? (PET_KINDS.find(k=>k.id===a.kind)||{}).label
+      : fmtAED(a.value)+' &middot; Type '+(a.activityType==='one'?'One':'Two')
+    return '<div class="row">'+
+      '<div class="row-l">'+
+        '<div class="icon-chip">'+svgFor(state.species,18).replace('width:18px;height:18px','width:18px;height:18px')+'</div>'+
+        '<div style="min-width:0">'+
+          '<p style="margin:0;font-size:var(--t-500);font-weight:var(--w-bold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(a.name)+'</p>'+
+          '<p class="tiny num" style="margin:2px 0 0">'+(yrs!==null?yrs+' yr &middot; ':'')+(meta||'')+'</p>'+
+        '</div></div>'+
+      '<div style="display:flex;gap:var(--gap-default);flex-shrink:0">'+
+        '<button class="btn-sm pill-blue" onclick="editAnimal(\''+a.id+'\')">Edit</button>'+
+        '<button class="btn-sm pill-plain" onclick="deleteAnimal(\''+a.id+'\')">Delete</button>'+
+      '</div></div>'
+  }).join('')+'</div>' : ''
+
+  const draft=state.draft?'<div class="card card-lg">'+animalForm(state.draft)+'</div>':''
+  const add=state.draft?'':'<button class="btn btn-dash" onclick="addAnimal()">+ Add another '+sp.one+'</button>'
+  const canNext=state.animals.length>0&&!state.draft
+
+  document.getElementById('step-details').innerHTML=
+    policyCard+list+draft+add+
+    '<button class="btn btn-primary" onclick="goToPackage()"'+(canNext?'':' disabled')+'>Next &rarr;</button>'+
+    '<p class="tiny" style="text-align:center;padding:0 var(--gap-md)">You will not receive advice or a recommendation from us. We ask these questions to narrow down the packages we show you.</p>'
+}
+
+function chipYN(field,val,type){
+  const o=(v,lab)=>'<button type="button" class="chip" data-'+type+'="'+field+'" data-v="'+v+'" aria-pressed="'+(val===v)+'">'+lab+'</button>'
+  return '<div class="chips">'+o(type==='yn'?'true':'yes','Yes')+o(type==='yn'?'false':'no','No')+'</div>'
+}
+
+function animalForm(a){
+  const sp=SPECIES[state.species]
+  const isEdit=state.animals.some(x=>x.id===a.id)
+  const isPet=state.species==='pet'
+
+  const typeCard=t=>{
+    const on=a.activityType===t
+    return '<button type="button" class="sel typecard" data-type="'+t+'" aria-pressed="'+on+'">'+
+      '<div class="sel-hd"><span class="sel-title">Type '+(t==='one'?'One':'Two')+'</span>'+
+      (on?'<svg style="width:19px;height:19px;color:var(--accent)" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/></svg>':'')+
+      '</div>'+
+      '<p class="tiny" style="margin:var(--gap-xs) 0 var(--gap-default);font-weight:var(--w-medium)">'+(t==='one'?'Lower-risk activities':'Everything in Type One, plus:')+'</p>'+
+      '<p class="tiny" style="margin:0">'+(acts[t]||[]).join(' &middot; ')+'</p></button>'
+  }
+  const acts=ACTIVITIES[state.species]||{one:[],two:[]}
+  const opts=a.activityType?(acts[a.activityType]||[]):[]
+
+  const petFields=
+    '<div><label for="a-kind">What kind of '+sp.one+' is it?</label>'+
+      '<select id="a-kind" class="field"><option value="">Please select&hellip;</option>'+
+      PET_KINDS.map(k=>'<option value="'+k.id+'"'+(a.kind===k.id?' selected':'')+'>'+k.label+'</option>').join('')+
+      '</select><p id="e-kind" class="err">Please choose one</p></div>'+
+    '<div><label for="a-breed">Breed <span style="font-weight:var(--w-regular);color:var(--text-muted)">&middot; optional</span></label>'+
+      '<input id="a-breed" value="'+esc(a.breed)+'" placeholder="e.g. Arabian Mau" class="field" /></div>'+
+    '<div><label>Has your '+sp.one+' been neutered or spayed?</label>'+chipYN('neutered',a.neutered===null?null:String(a.neutered),'yn')+'</div>'
+
+  const equineFields=isPet?'':(
+    '<div><label for="a-value">What is '+(a.name?esc(a.name)+'&rsquo;s':'the')+' current value?</label>'+
+      '<div class="prefix"><span>AED</span>'+
+      '<input id="a-value" inputmode="numeric" value="'+moneyDisplay(a.value)+'" placeholder="200,000" class="field num" /></div>'+
+      '<p class="hint">Agreed value for the death benefit, up to '+fmtAED(MAX_VALUE_ONLINE)+' online.</p>'+
+      '<p id="e-value" class="err">Please give a value of at least AED 1,000</p></div>'+
+    '<div><label>What will you use your '+sp.one+' for?</label>'+
+      '<div style="display:grid;grid-template-columns:1fr;gap:var(--gap-default)">'+typeCard('one')+typeCard('two')+'</div>'+
+      '<p id="e-type" class="err">Please choose a type</p>'+
+      (a.activityType
+        ? '<div style="margin-top:var(--gap-lg)"><label for="a-act">Main activity</label>'+
+          '<select id="a-act" class="field"><option value="">Please select&hellip;</option>'+
+          opts.map(o=>'<option value="'+esc(o)+'"'+(a.activity===o?' selected':'')+'>'+esc(o)+'</option>').join('')+
+          '</select><p id="e-act" class="err">Please choose an activity</p></div>'
+        : '')+
+    '</div>')
+
+  return '<p class="eyebrow">'+sp.Title+' details</p>'+
+  '<div class="stack-lg">'+
+    '<div><label for="a-name">What is your '+sp.one+'&rsquo;s name?</label>'+
+      '<input id="a-name" value="'+esc(a.name)+'" placeholder="'+(isPet?'e.g. Luna':'e.g. Shaheen')+'" class="field" />'+
+      '<p id="e-name" class="err">Please give a name</p></div>'+
+
+    '<div><label for="a-dob">Date of birth</label>'+
+      '<input id="a-dob" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10" value="'+isoToDMY(a.dob)+'" class="field num" />'+
+      '<p class="hint">'+(isPet?'Cover can start from eight weeks old.':'Day, month, year.')+'</p>'+
+      '<p id="e-dob" class="err">Enter a real date of birth as DD/MM/YYYY</p></div>'+
+
+    (isPet?petFields:equineFields)+
+
+    '<div><label for="a-chip">Microchip number <span style="font-weight:var(--w-regular);color:var(--text-muted)">&middot; optional</span></label>'+
+      '<input id="a-chip" value="'+esc(a.microchip)+'" placeholder="e.g. 826002050012345" class="field num" /></div>'+
+
+    '<div class="note note-plain">'+
+      '<p style="margin:0 0 var(--gap-md);font-size:var(--t-400);font-weight:var(--w-bold)">Three things we have to ask</p>'+
+      '<div class="stack-lg">'+
+        '<div><p style="margin:0 0 var(--gap-default);font-size:var(--t-400)">Is your '+sp.one+' in sound health today?</p>'+chipYN('health',a.health,'yns')+'</div>'+
+        '<div><p style="margin:0 0 var(--gap-default);font-size:var(--t-400)">Has your '+sp.one+' had any illness, injury or condition treated before?</p>'+
+          chipYN('existing',a.existing,'yns')+
+          (a.existing==='yes'
+            ? '<div style="margin-top:var(--gap-md);padding-top:var(--gap-md);border-top:var(--bw) solid var(--line)">'+
+                '<p class="tiny" style="margin:0 0 var(--gap-md)">Tell us a little more. In most cases the condition is excluded and the rest of the cover stands &mdash; it is rarely a reason to decline. Your vet&rsquo;s certificate will confirm the detail.</p>'+
+                '<div class="stack" style="gap:var(--gap-md)">'+
+                  '<div><label for="a-cwhat" style="font-size:var(--t-300)">What was the condition?</label>'+
+                    '<input id="a-cwhat" value="'+esc(a.condWhat)+'" placeholder="'+(isPet?'e.g. ear infection':'e.g. mild tendon strain, near fore')+'" class="field" />'+
+                    '<p id="e-cwhat" class="err">Please describe the condition</p></div>'+
+                  '<div><label for="a-cwhen" style="font-size:var(--t-300)">When was it first noticed?</label>'+
+                    '<input id="a-cwhen" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10" value="'+isoToDMY(a.condWhen)+'" class="field num" />'+
+                    '<p id="e-cwhen" class="err">Enter a date as DD/MM/YYYY</p></div>'+
+                  '<div><label for="a-cstat" style="font-size:var(--t-300)">How is it now?</label>'+
+                    '<select id="a-cstat" class="field"><option value="">Please select&hellip;</option>'+
+                      ['Fully resolved, no treatment for over 12 months','Fully resolved, treated within the last 12 months','Managed with ongoing medication','Still under investigation or treatment']
+                        .map(o=>'<option value="'+esc(o)+'"'+(a.condStatus===o?' selected':'')+'>'+esc(o)+'</option>').join('')+
+                    '</select><p id="e-cstat" class="err">Please choose one</p></div>'+
+                  '<div><label for="a-cvet" style="font-size:var(--t-300)">Treating vet or clinic <span style="font-weight:var(--w-regular);color:var(--text-muted)">&middot; optional</span></label>'+
+                    '<input id="a-cvet" value="'+esc(a.condVet)+'" placeholder="e.g. D1 Veterinary Clinic, Al Quoz" class="field" /></div>'+
+                '</div></div>'
+            : '')+
+        '</div>'+
+        '<div><p style="margin:0 0 var(--gap-default);font-size:var(--t-400)">Are you the sole owner, with no lease, loan or lien?</p>'+chipYN('owner',a.owner,'yns')+'</div>'+
+      '</div></div>'+
+  '</div>'+
+
+  '<div class="btn-row" style="margin-top:var(--gap-xl)">'+
+    '<button class="btn btn-primary grow" onclick="saveAnimal()">Save '+sp.one+'</button>'+
+    ((state.animals.length>0||isEdit)?'<button class="btn btn-ghost" onclick="cancelAnimal()">Cancel</button>':'')+
+  '</div>'
+}
+
+function syncDraft(){
+  const d=state.draft; if(!d) return
+  const g=id=>document.getElementById(id)
+  if(g('a-name'))  d.name=g('a-name').value.trim()
+  if(g('a-dob'))   { d.dobRaw=g('a-dob').value; d.dob=dmyToIso(g('a-dob').value) }
+  if(g('a-chip'))  d.microchip=g('a-chip').value.trim()
+  if(g('a-kind'))  d.kind=g('a-kind').value
+  if(g('a-breed')) d.breed=g('a-breed').value.trim()
+  if(g('a-value')) d.value=parseMoney(g('a-value').value)
+  if(g('a-act'))   d.activity=g('a-act').value
+  if(g('a-cwhat')) d.condWhat=g('a-cwhat').value.trim()
+  if(g('a-cwhen')) d.condWhen=dmyToIso(g('a-cwhen').value)
+  if(g('a-cstat')) d.condStatus=g('a-cstat').value
+  if(g('a-cvet'))  d.condVet=g('a-cvet').value.trim()
+}
+function syncPolicy(){
+  const g=id=>document.getElementById(id)
+  if(g('p-start')){
+    state.policy.startRaw=g('p-start').value
+    const iso=dmyToIso(g('p-start').value)
+    if(iso) state.policy.startDate=iso
+  }
+  if(g('p-emirate')) state.policy.emirate=g('p-emirate').value
+}
+function attachDetailListeners(){
+  maskDate(document.getElementById('p-start'))
+  maskDate(document.getElementById('a-dob'))
+  maskDate(document.getElementById("a-cwhen"))
+  maskMoney(document.getElementById('a-value'))
+  document.querySelectorAll('[data-yn]').forEach(el=>el.addEventListener('click',()=>{
+    syncDraft(); syncPolicy(); state.draft[el.dataset.yn]=el.dataset.v==='true'; renderDetails()
+  }))
+  document.querySelectorAll('[data-yns]').forEach(el=>el.addEventListener('click',()=>{
+    syncDraft(); syncPolicy(); state.draft[el.dataset.yns]=el.dataset.v; renderDetails()
+  }))
+  document.querySelectorAll('.typecard').forEach(el=>el.addEventListener('click',()=>{
+    syncDraft(); syncPolicy()
+    if(state.draft.activityType!==el.dataset.type){ state.draft.activityType=el.dataset.type; state.draft.activity='' }
+    renderDetails()
+  }))
+}
+
+function addAnimal(){ syncPolicy(); state.draft=blankAnimal(); renderDetails() }
+function editAnimal(id){
+  syncPolicy()
+  const a=state.animals.find(x=>x.id===id); if(!a) return
+  state.animals=state.animals.filter(x=>x.id!==id); state.draft=a; renderDetails()
+}
+function deleteAnimal(id){
+  syncPolicy()
+  state.animals=state.animals.filter(x=>x.id!==id)
+  if(state.animals.length===0&&!state.draft) state.draft=blankAnimal()
+  renderDetails()
+}
+function cancelAnimal(){ syncPolicy(); state.draft=null; renderDetails() }
+
+function saveAnimal(){
+  syncDraft(); syncPolicy()
+  const d=state.draft, g=id=>document.getElementById(id), isPet=state.species==='pet'
+  let ok=true, firstBad=null
+  const bad=(eid,fid)=>{const e=g(eid); if(e)e.classList.add('show'); if(fid&&g(fid))g(fid).classList.add('bad'); ok=false; if(!firstBad)firstBad=fid}
+  const good=(eid,fid)=>{const e=g(eid); if(e)e.classList.remove('show'); if(fid&&g(fid))g(fid).classList.remove('bad')}
+  d.name?good('e-name','a-name'):bad('e-name','a-name')
+  ;(d.dob && !futureISO(d.dob))?good('e-dob','a-dob'):bad('e-dob','a-dob')
+  if(isPet){ d.kind?good('e-kind','a-kind'):bad('e-kind','a-kind') }
+  else{
+    Number(d.value)>=1000?good('e-value','a-value'):bad('e-value','a-value')
+    d.activityType?good('e-type'):bad('e-type',null)
+    if(d.activityType){ d.activity?good('e-act','a-act'):bad('e-act','a-act') }
+  if(d.existing==="yes"){
+    d.condWhat?good("e-cwhat","a-cwhat"):bad("e-cwhat","a-cwhat")
+    d.condWhen?good("e-cwhen","a-cwhen"):bad("e-cwhen","a-cwhen")
+    d.condStatus?good("e-cstat","a-cstat"):bad("e-cstat","a-cstat")
+  }
+  }
+  if(!ok){ if(firstBad&&g(firstBad)) g(firstBad).focus(); return }
+  state.animals.push(d); state.draft=null; renderDetails()
+}
+
+function goToPackage(){
+  syncPolicy()
+  const g=id=>document.getElementById(id)
+  const sIso=dmyToIso(state.policy.startRaw!=null?state.policy.startRaw:isoToDMY(state.policy.startDate))
+  if(!sIso || pastISO(sIso)){
+    g('e-start').classList.add('show'); g('p-start').classList.add('bad'); g('p-start').focus(); return
+  }
+  g('e-start').classList.remove('show'); g('p-start').classList.remove('bad')
+  state.policy.startDate=sIso
+  if(!state.policy.emirate){
+    g('e-emirate').classList.add('show'); g('p-emirate').classList.add('bad'); g('p-emirate').focus(); return
+  }
+  g('e-emirate').classList.remove('show'); g('p-emirate').classList.remove('bad')
+  renderSteps(1); renderPackage(); showStep('package')
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STEP 2 — PACKAGE, NETWORK, CONTRACT
+// ═══════════════════════════════════════════════════════════════
+function tierPriceFor(tierId){
+  const saved=state.tier
+  state.tier=tierId
+  const q=calcQuote()
+  state.tier=saved
+  return q ? q.total : null              // null means referral — no online price
+}
+
+function renderPackage(){
+  const sp=SPECIES[state.species], con=CONTRACTS[state.contract]
+
+  const tiers=PACKAGES[state.species].map(p=>{
+    const m=TIER_META[p.id], on=state.tier===p.id
+    const price=tierPriceFor(p.id)
+    return '<button type="button" class="tier tierbtn" data-tier="'+p.id+'" aria-pressed="'+on+'">'+
+      (p.popular?'<span class="best">Most chosen</span>':'')+
+      '<div class="tname"><span class="swatch" style="background:'+m.swatch+'"></span>'+m.name+'</div>'+
+      '<div class="tlimit num">'+fmtShort(p.vet)+'</div>'+
+      '<div class="tsub">annual vet limit</div>'+
+      (price
+        ? '<div class="tprice num">'+fmtAED(price)+'</div><div class="tsub">'+con.premiumLower+' a year</div>'
+        : '<div class="tprice" style="color:var(--warn)">Quoted by our team</div><div class="tsub">price follows by email</div>')+
+    '</button>'
+  }).join('')
+
+  // ── Add-ons: anything the chosen package leaves out but that can still
+  //    be bought at cost, so a lower vet limit need not mean less cover.
+  const avgVal = state.animals.length
+    ? state.animals.reduce((s,a)=>s+Number(a.value||0),0)/state.animals.length : 0
+  const addonRow = b => {
+    const on=!!state.addons[b.id]
+    const price=addonPrice(b,avgVal)
+    // Indicative limit. Percentage-based ones also show what that is in AED.
+    let cap=b.cap||'Up to the annual vet limit'
+    if(b.addonPct && avgVal) cap += ' &middot; about '+fmtAED(avgVal*(b.id==='lou'?0.6:0.5))
+    return '<button type="button" class="sel addonbtn" data-addon="'+b.id+'" aria-pressed="'+on+'">'+
+      '<div style="display:flex;align-items:flex-start;gap:var(--gap-md)">'+
+        '<span class="box">'+(on?CHECK:'')+'</span>'+
+        '<span style="flex:1;min-width:0">'+
+          '<span class="sel-hd"><span class="sel-title">'+b.label+'</span>'+
+          '<span class="num" style="font-size:var(--t-300);font-weight:var(--w-bold);color:var(--accent);flex-shrink:0">+'+fmtAED(price)+'</span></span>'+
+          '<span class="num" style="display:block;margin-top:3px;font-size:var(--t-400);font-weight:var(--w-medium)">'+cap+'</span>'+
+          (b.note?'<span class="tiny" style="display:block;margin-top:5px">'+b.note+'</span>':'')+
+          '<span class="tiny" style="display:block;margin-top:5px;color:var(--text-faint)">Included as standard from '+TIER_META[b.from].name+'</span>'+
+        '</span></div></button>'
+  }
+  const animalAddons=availableAddons(state.species,state.tier,'animal')
+  const policyAddons=availableAddons(state.species,state.tier,'policy')
+  const addonBlock = (animalAddons.length||policyAddons.length)
+    ? '<div class="note note-plain" style="margin-bottom:var(--gap-xl);padding:var(--gap-lg) var(--gap-lg) var(--gap-md)">'+
+        '<p style="margin:0;font-size:var(--t-400);font-weight:var(--w-bold)">Keep the cover, not the package</p>'+
+        '<p class="tiny" style="margin:var(--gap-xs) 0 0">'+TIER_META[state.tier].name+' leaves these out, but you can add any of them at cost. Useful if you want a smaller vet limit without giving up the extras.</p>'+
+      '</div>'+
+      (animalAddons.length
+        ? '<label>Add to each '+sp.one+'</label>'+
+          '<div class="stack" style="gap:var(--gap-default);margin-bottom:var(--gap-xl)">'+animalAddons.map(addonRow).join('')+'</div>'
+        : '')+
+      (policyAddons.length
+        ? '<label>Cover for you</label>'+
+          '<div class="stack" style="gap:var(--gap-default);margin-bottom:var(--gap-xl)">'+policyAddons.map(addonRow).join('')+'</div>'
+        : '')
+    : ''
+
+  const needsTeam = tierPriceFor(state.tier)===null
+  const teamNote = needsTeam
+    ? '<div class="note note-amber" style="margin-bottom:var(--gap-xl)">'+
+      '<p style="margin:0;font-size:var(--t-400);font-weight:var(--w-bold)">We cannot price this one online</p>'+
+      '<p class="tiny" style="margin:var(--gap-xs) 0 0">Something you have told us puts this outside the online rules &mdash; usually age, value or an existing condition. Choose the package you want and we will quote it by email within one business day.</p></div>'
+    : ''
+
+  const nets=Object.values(NETWORKS).map(nw=>{
+    const on=state.network===nw.id
+    return '<button type="button" class="sel netbtn" data-net="'+nw.id+'" aria-pressed="'+on+'">'+
+      '<div class="sel-hd"><span class="sel-title">'+nw.label+'</span>'+
+      (nw.id==='d1'?'<span class="tag tag-inc">Saves 10%</span>':'')+'</div>'+
+      '<p class="tiny" style="margin:var(--gap-xs) 0 0;font-weight:var(--w-medium);color:var(--text)">'+nw.head+'</p>'+
+      '<p class="tiny" style="margin:2px 0 0">'+nw.note+'</p></button>'
+  }).join('')
+
+  const contracts=Object.values(CONTRACTS).map(c=>
+    '<button data-cb="'+c.id+'" aria-pressed="'+(state.contract===c.id)+'">'+c.label+'</button>').join('')
+
+  // comparison table
+  const bens=BENEFITS[state.species]
+  const head='<tr><th></th>'+PACKAGES[state.species].map(p=>
+    '<th class="'+(state.tier===p.id?'on':'')+'">'+TIER_META[p.id].name+'</th>').join('')+'</tr>'
+  const body=bens.map(b=>{
+    const cells=PACKAGES[state.species].map(p=>{
+      const inTier=tierIndex(p.id)>=tierIndex(b.from)
+      const cls=(state.tier===p.id?'on':'')
+      let v
+      if(!inTier) v='<span class="no">&mdash;</span>'
+      else if(b.limit) v='<span class="num">'+fmtShort(p.tpl)+'</span>'
+      else if(b.death) v = p.death==='agreed' ? '<span class="num">Agreed value</span>'
+                        : (p.death? '<span class="num">'+fmtShort(p.death)+'</span>' : '<span class="no">&mdash;</span>')
+      else v='<span class="yes">&#10003;</span>'
+      return '<td class="'+cls+'">'+v+'</td>'
+    }).join('')
+    return '<tr><td>'+b.label+'</td>'+cells+'</tr>'
+  }).join('')
+  const limitsRow='<tr><td><strong>Annual vet limit</strong></td>'+PACKAGES[state.species].map(p=>
+    '<td class="'+(state.tier===p.id?'on':'')+'"><strong class="num">'+fmtShort(p.vet)+'</strong></td>').join('')+'</tr>'
+  const excessRow='<tr><td>Excess you pay</td>'+PACKAGES[state.species].map(p=>
+    '<td class="'+(state.tier===p.id?'on':'')+'"><span class="num">'+p.excess+'</span></td>').join('')+'</tr>'
+
+  document.getElementById('step-package').innerHTML='<div class="card card-lg">'+
+    '<h2 style="font-size:var(--t-700);font-weight:var(--w-bold);letter-spacing:-.02em">Choose your package</h2>'+
+    '<p class="lede" style="margin-bottom:var(--gap-xl)">Four levels of cover for '+
+      (state.animals.length===1?esc(state.animals[0].name):'all '+state.animals.length+' '+sp.many)+
+      '. Annual limits, not a fixed pot per treatment.</p>'+
+
+    teamNote+
+
+    '<div class="grid4" style="margin-bottom:var(--gap-xl)">'+tiers+'</div>'+
+
+    '<label>What each package covers</label>'+
+    '<div class="cmp-wrap"><table class="cmp"><thead>'+head+'</thead><tbody>'+
+      limitsRow+body+excessRow+
+    '</tbody></table></div>'+
+    '<p class="tiny" style="margin:var(--gap-md) 0 var(--gap-xl)">Pre-existing conditions are not covered. Illness showing within 14 days of the start date is excluded, and each condition is covered for 365 days from the first clinical sign.</p>'+
+
+    addonBlock+
+
+    '<label>Where will you be treated?</label>'+
+    '<div class="stack" style="gap:var(--gap-default);margin-bottom:var(--gap-xl)">'+nets+'</div>'+
+
+    '<label>How would you like to be covered?</label>'+
+    '<div class="seg" style="margin-bottom:var(--gap-default)">'+contracts+'</div>'+
+    '<p class="tiny" style="margin:0 0 var(--gap-xl)">'+con.note+'</p>'+
+
+    '<div class="btn-row" style="margin-top:var(--gap-xl)">'+
+      '<button class="btn btn-ghost" onclick="backToDetails()">&larr; Back</button>'+
+      '<button class="btn btn-primary grow" onclick="goToQuote()">See my '+con.premiumLower+' &rarr;</button>'+
+    '</div></div>'
+
+  document.querySelectorAll('.tierbtn').forEach(el=>el.addEventListener('click',()=>{
+    state.tier=el.dataset.tier; renderPackage()
+  }))
+  document.querySelectorAll('.addonbtn').forEach(el=>el.addEventListener('click',()=>{
+    const id=el.dataset.addon
+    state.addons[id]=!state.addons[id]
+    renderPackage()
+  }))
+  document.querySelectorAll('.netbtn').forEach(el=>el.addEventListener('click',()=>{
+    state.network=el.dataset.net; renderPackage()
+  }))
+  document.querySelectorAll('[data-cb]').forEach(el=>el.addEventListener('click',()=>{
+    state.contract=el.dataset.cb
+    document.getElementById('crumb').innerHTML=SPECIES[state.species].label+' &middot; '+CONTRACTS[state.contract].label
+    renderPackage()
+  }))
+}
+function backToDetails(){ renderSteps(0); renderDetails(); showStep('details') }
+
+function goToQuote(){
+  const reasons=referralReasons()
+  const q = reasons.length ? null : calcQuote()
+  if(reasons.length || !q){
+    state.referral = reasons.length ? reasons : ['This combination needs a person to price it.']
+    state.quote=null
+  } else { state.quote=q; state.referral=null }
+  renderSteps(2); renderQuote(); showStep('quote')
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STEP 3 — QUOTE
+// ═══════════════════════════════════════════════════════════════
+function ln(label,value,strong){
+  return '<div class="row" style="padding:var(--gap-default) 0"><span style="font-size:var(--t-400);'+(strong?'font-weight:var(--w-bold)':'color:var(--text-muted)')+'">'+label+'</span>'+
+    '<span class="num" style="font-size:var(--t-400);font-weight:'+(strong?'var(--w-bold)':'var(--w-medium)')+';text-align:right;flex-shrink:0">'+value+'</span></div>'
+}
+function renderQuote(){
+  const sp=SPECIES[state.species], con=CONTRACTS[state.contract], nw=NETWORKS[state.network]
+  const back='<button class="btn btn-ghost" onclick="backToPackage()">&larr; Change package</button>'
+
+  if(state.referral){
+    document.getElementById('step-quote').innerHTML='<div class="card card-lg">'+
+      '<div style="display:flex;align-items:flex-start;gap:var(--gap-md);margin-bottom:var(--gap-lg)">'+
+        '<div class="icon-chip" style="background:var(--warn-soft)"><svg style="color:var(--y-300)" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg></div>'+
+        '<div><h2 style="font-size:var(--t-700);font-weight:var(--w-bold);letter-spacing:-.02em">One of our team will price this</h2>'+
+        '<p class="lede">We can still cover it &mdash; it just needs a person rather than the calculator.</p></div></div>'+
+
+      '<div class="note note-amber" style="margin-bottom:var(--gap-lg)">'+
+        '<p style="margin:0;font-size:var(--t-400);font-weight:var(--w-bold)">Why</p><ul>'+
+        state.referral.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>'+
+
+      '<div class="note note-plain" style="margin-bottom:var(--gap-xl)">'+
+        '<p style="margin:0 0 var(--gap-default);font-size:var(--t-400);font-weight:var(--w-bold)">What we will quote on</p>'+
+        state.animals.map(a=>ln(esc(a.name),
+          state.species==='pet' ? esc((PET_KINDS.find(k=>k.id===a.kind)||{}).label||'') : fmtAED(a.value))).join('')+
+        ln('Package',TIER_META[state.tier].name)+
+        ln('Treated at',nw.label)+
+        ln('Basis',con.label)+
+        ln('Starts',fmtDate(state.policy.startDate))+'</div>'+
+
+      '<div class="btn-row">'+back+'<button class="btn btn-primary grow" onclick="goToSecure()">Request a quote &rarr;</button></div></div>'
+    return
+  }
+
+  const q=state.quote, pkg=PACKAGES[state.species].find(p=>p.id===state.tier)
+  const blocks=q.perAnimal.map(r=>
+    '<div class="note note-plain">'+
+      '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:var(--gap-md)">'+
+        '<p style="margin:0;font-size:var(--t-500);font-weight:var(--w-bold)">'+esc(r.animal.name)+'</p>'+
+        '<p class="num" style="margin:0;font-size:var(--t-500);font-weight:var(--w-bold)">'+fmtAED2(r.subtotal)+'</p></div>'+
+      '<p class="tiny num" style="margin:3px 0 var(--gap-default)">'+
+        (state.species==='pet'
+          ? esc((r.kind||{}).label||'')
+          : esc(r.animal.activity)+' &middot; '+fmtAED(r.animal.value)+' agreed value')+
+        ' &middot; '+ageFromDob(r.animal.dob)+' yr</p>'+
+      r.lines.map(l=>'<div style="display:flex;justify-content:space-between;gap:var(--gap-md);padding:3px 0"><span class="tiny">'+l.label+'</span><span class="num tiny" style="font-weight:var(--w-medium);color:var(--text)">'+fmtAED2(l.amount)+'</span></div>').join('')+
+    '</div>').join('')
+
+  document.getElementById('step-quote').innerHTML='<div class="card card-lg">'+
+    '<h2 style="font-size:var(--t-700);font-weight:var(--w-bold);letter-spacing:-.02em">Your quote</h2>'+
+    '<p class="lede" style="margin-bottom:var(--gap-xl)">Indicative, and held for 30 days.</p>'+
+
+    '<div class="slab" style="margin-bottom:var(--gap-xl)">'+
+      '<p class="k" style="margin:0">'+TIER_META[state.tier].name+' &middot; annual '+con.premiumLower+'</p>'+
+      '<p class="v num">'+fmtAED2(q.total)+'</p>'+
+      '<p class="s" style="margin:0">'+state.animals.length+' '+(state.animals.length===1?sp.one:sp.many)+
+        ' &middot; '+fmtShort(pkg.vet)+' vet limit each &middot; '+pkg.excess+' excess</p></div>'+
+
+    (state.network==='d1'
+      ? '<div class="note note-green" style="margin-bottom:var(--gap-xl)">'+
+        '<p style="margin:0;font-size:var(--t-400);font-weight:var(--w-bold);color:var(--ok)">Direct billing at D1 clinics</p>'+
+        '<p class="tiny" style="margin:var(--gap-xs) 0 0">You pay only your '+pkg.excess+' excess at reception. Choosing the D1 network saved you about '+fmtAED(q.networkSaving)+' a year.</p></div>'
+      : '<div class="note note-amber" style="margin-bottom:var(--gap-xl)">'+
+        '<p style="margin:0;font-size:var(--t-400);font-weight:var(--w-bold)">Pay and claim</p>'+
+        '<p class="tiny" style="margin:var(--gap-xs) 0 0">Switching to the D1 network would take about '+fmtAED(q.gross/0.9*0.1)+' off and remove claim forms entirely.</p></div>')+
+
+    '<label>Per '+sp.one+'</label>'+
+    '<div class="stack" style="gap:var(--gap-default);margin-bottom:var(--gap-xl)">'+blocks+'</div>'+
+
+    (q.policyLines.length
+      ? '<label>Cover for you</label>'+
+        '<div class="note note-plain" style="margin-bottom:var(--gap-xl)">'+
+          q.policyLines.map(l=>'<div style="display:flex;justify-content:space-between;gap:var(--gap-md);padding:3px 0"><span class="tiny">'+l.label+'</span><span class="num tiny" style="font-weight:var(--w-medium);color:var(--text)">'+fmtAED2(l.amount)+'</span></div>').join('')+
+        '</div>' : '')+
+
+    '<div class="note note-plain" style="margin-bottom:var(--gap-xl)">'+
+      ln('Sub-total',fmtAED2(q.gross))+
+      (q.multi>0?ln('Multi-animal discount','&minus;'+fmtAED2(q.multiAmt)):'')+
+      ln('Total '+con.premiumLower,fmtAED2(q.total),true)+'</div>'+
+
+
+    '<div class="btn-row">'+back+'<button class="btn btn-green grow" onclick="goToSecure()">Select this quote &rarr;</button></div></div>'
+}
+function backToPackage(){ renderSteps(1); renderPackage(); showStep('package') }
+
+// ═══════════════════════════════════════════════════════════════
+// STEP 4 — EID + EMAIL
+// ═══════════════════════════════════════════════════════════════
+function goToSecure(){ renderSteps(3); renderSecure(); showStep('secure') }
+function renderSecure(){
+  const isRef=!!state.referral, c=state.contact, con=CONTRACTS[state.contract]
+  document.getElementById('step-secure').innerHTML='<div class="card card-lg">'+
+    '<h2 style="font-size:var(--t-700);font-weight:var(--w-bold);letter-spacing:-.02em">'+(isRef?'Send it to our team':'Secure this price')+'</h2>'+
+    '<p class="lede" style="margin-bottom:var(--gap-xl)">We pull your name, nationality and address from your Emirates ID, so there is nothing else to type.</p>'+
+
+    '<p class="eyebrow">'+con.holder+' details</p>'+
+    '<div class="grid2f" style="margin-bottom:var(--gap-lg)">'+
+      '<div><label for="f-eid">'+con.holder+'&rsquo;s Emirates ID <span style="color:var(--bad)">*</span></label>'+
+        '<div class="prefix"><span style="color:var(--text);font-weight:var(--w-bold)">784 -</span>'+
+        '<input id="f-eid" inputmode="numeric" autocomplete="off" placeholder="1990 - 1234567 - 8" maxlength="18" value="'+esc(eidRestOf(c.eid))+'" class="field num" style="padding-left:62px" /></div>'+
+        '<p id="e-eid" class="err">Enter the remaining 12 digits of your Emirates ID</p></div>'+
+      '<div><label for="f-dob">Date of birth <span style="color:var(--bad)">*</span></label>'+
+        '<input id="f-dob" inputmode="numeric" placeholder="DD/MM/YYYY" maxlength="10" value="'+isoToDMY(c.dob||'')+'" class="field num" />'+
+        '<p id="e-dob-h" class="err">Enter your date of birth as DD/MM/YYYY</p></div>'+
+    '</div>'+
+    '<p class="hint" style="margin:0 0 var(--gap-xl)">We check these two together to confirm the Emirates ID belongs to you before we issue anything.</p>'+
+
+    '<div><label for="f-email">Email address <span style="color:var(--bad)">*</span></label>'+
+      '<input id="f-email" type="email" autocomplete="email" placeholder="you@example.ae" value="'+esc(c.email||'')+'" class="field" />'+
+      '<p id="e-email" class="err">Enter a valid email address</p>'+
+      '<p class="hint">We send your policy documents to this address, so please make sure it is one you can reach.</p></div>'+
+
+    '<div class="note note-plain" style="margin-top:var(--gap-lg)">'+
+      '<p class="tiny" style="margin:0">By continuing you agree that Shory may verify your identity against your Emirates ID, share your details with the '+con.carrier+' and the D1 network for direct billing, and contact you about this quote.</p></div>'+
+
+    '<p id="submit-error" class="hidden" style="color:var(--bad);font-size:var(--t-400);margin-top:var(--gap-md)"></p>'+
+
+    '<div class="btn-row" style="margin-top:var(--gap-xl)">'+
+      '<button class="btn btn-ghost" onclick="backToQuoteStep()">&larr; Back</button>'+
+      '<button id="submit-btn" class="btn '+(isRef?'btn-primary':'btn-green')+' grow" onclick="submitQuote()">'+
+        (isRef?'Send my details &rarr;':'Continue to payment &rarr;')+'</button></div></div>'
+
+  const eid=document.getElementById('f-eid')
+  eid.addEventListener('input',()=>{
+    // 784 is fixed and shown as an adornment — we only take the other 12 digits
+    const d=eid.value.replace(/\D/g,'').slice(0,12)
+    eid.value=[d.slice(0,4),d.slice(4,11),d.slice(11,12)].filter(Boolean).join(' - ')
+  })
+  maskDate(document.getElementById('f-dob'))
+}
+function backToQuoteStep(){ renderSteps(2); renderQuote(); showStep('quote') }
+// The field only holds the 12 digits after the fixed 784 prefix.
+const eidDigits=v=>String(v||'').replace(/\D/g,'')
+const validEID=v=>/^\d{12}$/.test(eidDigits(v))
+const fmtEID=v=>{const d=eidDigits(v);return '784-'+[d.slice(0,4),d.slice(4,11),d.slice(11,12)].filter(Boolean).join('-')}
+// Strip a stored full EID back down to the 12 editable digits
+const eidRestOf=v=>{const d=eidDigits(v); const r=d.startsWith('784')?d.slice(3):d
+  return [r.slice(0,4),r.slice(4,11),r.slice(11,12)].filter(Boolean).join(' - ')}
+const validEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)
+
+// ═══════════════════════════════════════════════════════════════
+// SUBMIT
+// ═══════════════════════════════════════════════════════════════
+function buildPayload(ref){
+  const pkg=PACKAGES[state.species].find(p=>p.id===state.tier)
+  return {
+    reference:ref, submittedAt:new Date().toISOString(),
+    flow:state.referral?'referral':'straight-through',
+    product:'animal-care-v2', distribution:'D1 veterinary network',
+    species:state.species, speciesLabel:SPECIES[state.species].label,
+    contractBasis:CONTRACTS[state.contract].label,
+    package:{tier:TIER_META[state.tier].name, annualVetLimit:pkg.vet,
+             thirdPartyLiability:pkg.tpl, excess:pkg.excess,
+             deathBenefit: pkg.death==='agreed'?'Agreed value':pkg.death},
+    addons:[...availableAddons(state.species,state.tier,'animal'),
+            ...availableAddons(state.species,state.tier,'policy')]
+           .filter(b=>state.addons[b.id])
+           .map(b=>({name:b.label.replace(/&[a-z]+;/g,' ').trim(), scope:b.scope||'animal'})),
+    treatmentNetwork:NETWORKS[state.network].label,
+    directBilling: state.network==='d1',
+    policy:{startDate:state.policy.startDate,emirate:state.policy.emirate},
+    animals:state.animals.map(a=>({
+      name:a.name,dateOfBirth:a.dob,age:ageFromDob(a.dob),
+      kind:(PET_KINDS.find(k=>k.id===a.kind)||{}).label||null,
+      breed:a.breed||null, neutered:a.neutered, microchip:a.microchip||null,
+      agreedValue:a.value?Number(a.value):null,
+      activityType:a.activityType?(a.activityType==='one'?'Type One':'Type Two'):null,
+      activity:a.activity||null,
+      soundHealth:a.health, existingCondition:a.existing, soleOwner:a.owner,
+      conditionDetail: a.existing==="yes" ? {what:a.condWhat,firstNoticed:a.condWhen,status:a.condStatus,vet:a.condVet||null} : null,
+    })),
+    premium:state.quote?Number(state.quote.total.toFixed(2)):null,
+    referralReasons:state.referral||[],
+    contact:{emiratesId:state.contact.eid,email:state.contact.email},
+  }
+}
+function buildEmail(p){
+  const L=[]
+  L.push(p.flow==='referral'?'REFERRAL — needs manual underwriting':'QUOTE SELECTED — straight through')
+  L.push('Product:      Shory Animal Care V2 ('+p.distribution+')')
+  L.push('Reference:    '+p.reference)
+  L.push('Submitted:    '+p.submittedAt)
+  L.push('Basis:        '+p.contractBasis)
+  L.push('')
+  L.push('CUSTOMER')
+  L.push('  Emirates ID: '+p.contact.emiratesId)
+  L.push('  Email:       '+p.contact.email)
+  L.push('')
+  L.push('PACKAGE')
+  L.push('  Tier:                '+p.package.tier)
+  L.push('  Annual vet limit:    AED '+p.package.annualVetLimit.toLocaleString('en-AE'))
+  L.push('  Third-party liability: AED '+p.package.thirdPartyLiability.toLocaleString('en-AE'))
+  L.push('  Death benefit:       '+(typeof p.package.deathBenefit==='number'?'AED '+p.package.deathBenefit.toLocaleString('en-AE'):p.package.deathBenefit))
+  L.push("  Excess:              "+p.package.excess)
+  if(p.addons && p.addons.length){
+    L.push("  Add-ons bought:")
+    p.addons.forEach(a=>L.push("    - "+a.name+"  ("+a.scope+")"))
+  }
+  L.push('  Treated at:          '+p.treatmentNetwork)
+  L.push('  Direct billing:      '+(p.directBilling?'YES — set up with D1':'No — reimbursement'))
+  L.push('')
+  L.push('POLICY')
+  L.push('  Start date: '+p.policy.startDate)
+  L.push('  Emirate:    '+p.policy.emirate)
+  L.push('  Species:    '+p.speciesLabel)
+  L.push('')
+  L.push('ANIMALS ('+p.animals.length+')')
+  p.animals.forEach((a,i)=>{
+    L.push('  '+(i+1)+'. '+a.name)
+    L.push('     DOB / age:  '+a.dateOfBirth+'  ('+a.age+' years)')
+    if(a.kind)        L.push('     Kind:       '+a.kind)
+    if(a.breed)       L.push('     Breed:      '+a.breed)
+    if(a.neutered!==null&&a.neutered!==undefined) L.push('     Neutered:   '+(a.neutered?'Yes':'No'))
+    if(a.agreedValue) L.push('     Value:      AED '+a.agreedValue.toLocaleString('en-AE'))
+    if(a.activity)    L.push('     Use:        '+a.activity+'  ('+a.activityType+')')
+    L.push('     Microchip:  '+(a.microchip||'not given'))
+    L.push("     Health:     "+a.soundHealth+"   Existing condition: "+a.existingCondition+"   Sole owner: "+a.soleOwner)
+    if(a.conditionDetail){
+      L.push("       Condition:   "+a.conditionDetail.what)
+      L.push("       First seen:  "+a.conditionDetail.firstNoticed)
+      L.push("       Status:      "+a.conditionDetail.status)
+      if(a.conditionDetail.vet) L.push("       Vet:         "+a.conditionDetail.vet)
+    }
+  })
+  L.push('')
+  if(p.premium!=null) L.push('INDICATIVE ANNUAL: AED '+p.premium.toLocaleString('en-AE',{minimumFractionDigits:2}))
+  else { L.push('REFERRAL REASONS'); p.referralReasons.forEach(x=>L.push('  - '+x)) }
+  L.push('')
+  L.push('Next: retrieve customer details from Emirates ID, confirm terms, and register for D1 direct billing.')
+  return {subject:'['+(p.flow==='referral'?'Referral':'Quote')+'] '+p.speciesLabel+' '+p.package.tier+' — '+p.reference, body:L.join('\n')}
+}
+async function submitQuote(){
+  const g=id=>document.getElementById(id)
+  const eidEl=g('f-eid'), dobEl=g('f-dob'), emEl=g('f-email')
+  const eid=eidEl.value.trim(), dobIso=dmyToIso(dobEl.value), email=emEl.value.trim()
+  let ok=true, first=null
+  const mark=(good,errId,el)=>{
+    g(errId).classList.toggle('show',!good); el.classList.toggle('bad',!good)
+    if(!good){ ok=false; if(!first) first=el }
+  }
+  mark(validEID(eid),'e-eid',eidEl)
+  mark(!!dobIso && !futureISO(dobIso),'e-dob-h',dobEl)
+  mark(validEmail(email),'e-email',emEl)
+  if(!ok){ first.focus(); return }
+
+  state.contact={eid:fmtEID(eid),dob:dobIso,email}
+
+  // Straight-through goes to payment; referrals go to the team.
+  if(!state.referral){
+    state.ref=genRef()
+    renderPayment()
+    showPage('payment')
+    return
+  }
+  const ref=genRef(), payload=buildPayload(ref)
+  const btn=document.getElementById('submit-btn'), err=document.getElementById('submit-error')
+  const label=btn.textContent
+  btn.disabled=true; btn.textContent='Sending…'; err.classList.add('hidden')
+
+  let delivery='email'
+  if(SUPABASE_URL&&SUPABASE_ANON){
+    try{
+      const res=await fetch(SUPABASE_URL+'/functions/v1/animal-care-quote',{
+        method:'POST',
+        headers:{'Content-Type':'application/json',apikey:SUPABASE_ANON,Authorization:'Bearer '+SUPABASE_ANON},
+        body:JSON.stringify(payload)})
+      if(!res.ok){const b=await res.json().catch(()=>({})); throw new Error(b.error||('HTTP '+res.status))}
+      delivery='server'
+    }catch(e){
+      btn.disabled=false; btn.textContent=label
+      err.textContent='We could not send that: '+e.message+'. Please try again.'
+      err.classList.remove('hidden'); return
+    }
+  } else {
+    const m=buildEmail(payload)
+    window.location.href='mailto:'+REFERRAL_EMAIL+'?subject='+encodeURIComponent(m.subject)+'&body='+encodeURIComponent(m.body)
+  }
+  state.ref=ref
+  showConfirmation(payload,delivery)
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CONFIRMATION
+// ═══════════════════════════════════════════════════════════════
+function showConfirmation(p,delivery){
+  const isRef=p.flow==='referral'
+  const h=document.getElementById('conf-head')
+  h.style.background=isRef?'var(--p-600)':'var(--g-700)'
+  h.innerHTML='<div style="width:56px;height:56px;border-radius:var(--radius-full);background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin:0 auto var(--gap-md)">'+
+    (isRef
+      ? '<svg style="width:30px;height:30px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>'
+      : '<svg style="width:30px;height:30px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>')+
+    '</div>'+
+    '<h1 style="font-size:var(--t-700);font-weight:var(--w-bold);letter-spacing:-.02em">'+(isRef?'With our team.':'Your price is held.')+'</h1>'+
+    '<p style="margin:var(--gap-default) 0 0;font-size:var(--t-400);color:'+(isRef?'var(--p-100)':'var(--g-100)')+'">'+
+      (isRef?'We will come back with terms within 1 business day.':'We will email your documents and payment link shortly.')+'</p>'
+
+  document.getElementById('conf-body').innerHTML=
+    '<div style="border-radius:var(--radius-btn);padding:var(--gap-lg);text-align:center;background:var(--accent-soft)">'+
+      '<p style="margin:0;font-size:var(--t-300);text-transform:uppercase;letter-spacing:.09em;color:var(--accent);font-weight:var(--w-bold)">Your reference</p>'+
+      '<p class="num" style="margin:5px 0 3px;font-size:var(--t-700);font-weight:var(--w-bold);letter-spacing:.04em">'+p.reference+'</p>'+
+      '<p class="tiny" style="margin:0">Quote this at any D1 clinic</p></div>'+
+
+    '<div>'+
+      p.animals.map(a=>ln(esc(a.name),esc(a.kind||a.activity||''))).join('')+
+      ln('Package','<strong>'+p.package.tier+'</strong>')+
+      ln('Annual vet limit',fmtShort(p.package.annualVetLimit))+
+      ln('Excess',p.package.excess)+
+      ln('Basis',p.contractBasis)+
+      ln('Treated at',p.treatmentNetwork)+
+      (p.premium!=null?ln('Annual '+(p.contractBasis==='Takaful'?'contribution':'premium'),fmtAED2(p.premium),true):ln('Price','On referral',true))+
+    '</div>'+
+
+    (p.directBilling
+      ? '<div class="note note-green"><p style="margin:0;font-size:var(--t-400);font-weight:var(--w-bold);color:var(--ok)">Direct billing is set up</p>'+
+        '<p class="tiny" style="margin:var(--gap-xs) 0 0">Give your reference at any D1 clinic. They bill us directly &mdash; you pay only your '+p.package.excess+' excess.</p></div>'
+      : '')+
+
+    '<div class="note note-amber">'+
+      '<p style="margin:0;font-size:var(--t-400);font-weight:var(--w-bold)">What happens next</p><ul>'+
+        '<li>We retrieve your details from Emirates ID <strong class="num">'+esc(p.contact.emiratesId)+'</strong></li>'+
+        '<li>'+(isRef?'A specialist reviews and prices your risk':'We confirm cover and send a payment link')+'</li>'+
+        (p.directBilling?'<li>Your animals are registered with the D1 network for direct billing</li>':'')+
+        '<li>Cover starts once the '+(p.contractBasis==='Takaful'?'contribution':'premium')+' is received</li>'+
+      '</ul></div>'+
+
+    '<p class="tiny" style="text-align:center">'+
+      (delivery==='server'?'Sent to '+REFERRAL_EMAIL+'.'
+        :'Your email client has opened with the details addressed to '+REFERRAL_EMAIL+' &mdash; press send to complete.')+'</p>'+
+
+    '<button class="btn btn-primary" onclick="goHome()">Start another quote</button>'
+
+  showPage('confirmation')
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PAYMENT (simulated)
+// ═══════════════════════════════════════════════════════════════
+const PAY_METHODS=[
+  {id:'tabby', name:'Tabby',    sub:'Split into 4 interest-free payments', bg:'#3EEBBE', fg:'#1F1F1F', mark:'tabby'},
+  {id:'apple', name:'Apple Pay',sub:'Confirm with Face ID or Touch ID',    bg:'#000000', fg:'#FFFFFF', mark:'&#63743;Pay'},
+  {id:'card',  name:'Card',     sub:'Visa, Mastercard or Amex',            bg:'#F0F5FF', fg:'#1D68FF', mark:'CARD'},
+]
+let payMethod='tabby'
+
+function renderPayment(){
+  const p=buildPayload(state.ref), con=CONTRACTS[state.contract]
+  const m=PAY_METHODS.find(x=>x.id===payMethod)
+  const inst=(p.premium/4)
+
+  document.getElementById('pay-body').innerHTML='<div class="card card-lg">'+
+    '<h2 style="font-size:var(--t-700);font-weight:var(--w-bold);letter-spacing:-.02em">Payment</h2>'+
+    '<p class="lede" style="margin-bottom:var(--gap-xl)">Last step. Cover starts '+fmtDate(p.policy.startDate)+', as soon as this clears.</p>'+
+
+    '<div class="note note-plain" style="margin-bottom:var(--gap-xl)">'+
+      ln('Cover',p.speciesLabel+' &middot; '+p.package.tier)+
+      ln('Basis',p.contractBasis)+
+      ln('Annual '+con.premiumLower,fmtAED2(p.premium),true)+
+    '</div>'+
+
+    '<label>How would you like to pay?</label>'+
+    '<div class="stack" style="gap:var(--gap-default);margin-bottom:var(--gap-lg)">'+
+      PAY_METHODS.map(x=>{
+        const on=payMethod===x.id
+        return '<button type="button" class="pay paybtn" data-pay="'+x.id+'" aria-pressed="'+on+'">'+
+          '<span class="mark" style="background:'+x.bg+';color:'+x.fg+'">'+x.mark+'</span>'+
+          '<span style="flex:1;min-width:0">'+
+            '<span style="display:block;font-size:var(--t-400);font-weight:var(--w-bold)">Pay with '+x.name+'</span>'+
+            '<span class="tiny" style="display:block">'+x.sub+'</span></span>'+
+          '<span class="radio"></span></button>'
+      }).join('')+
+    '</div>'+
+
+    (payMethod==='tabby'
+      ? '<div class="note note-plain" style="margin-bottom:var(--gap-lg)"><p class="tiny" style="margin:0">'+
+        '4 payments of <strong class="num">'+fmtAED2(inst)+'</strong>. First today, then monthly. No interest, no fees.</p></div>'
+      : payMethod==='card'
+      ? '<div class="grid2f" style="margin-bottom:var(--gap-lg)">'+
+          '<div style="grid-column:1/-1"><label for="pay-num">Card number</label>'+
+            '<input id="pay-num" inputmode="numeric" placeholder="4242 4242 4242 4242" class="field num" disabled /></div>'+
+          '<div><label for="pay-exp">Expiry</label><input id="pay-exp" placeholder="MM/YY" class="field num" disabled /></div>'+
+          '<div><label for="pay-cvc">CVC</label><input id="pay-cvc" placeholder="123" class="field num" disabled /></div>'+
+        '</div>'+
+        '<p class="tiny" style="margin:0 0 var(--gap-lg)">Card fields are inactive in this prototype &mdash; no real payment is taken.</p>'
+      : '<div class="note note-plain" style="margin-bottom:var(--gap-lg)"><p class="tiny" style="margin:0">'+
+        'You will be asked to confirm with Face ID. Nothing is charged in this prototype.</p></div>')+
+
+    '<div class="btn-row">'+
+      '<button class="btn btn-ghost" onclick="showPage(\'quote\');showStep(\'secure\')">&larr; Back</button>'+
+      '<button class="btn btn-green grow" onclick="processPayment()">Pay '+fmtAED(p.premium)+' with '+m.name+'</button>'+
+    '</div>'+
+    '<p class="tiny" style="text-align:center;margin-top:var(--gap-md)">Simulated payment. No card is charged and no money moves.</p>'+
+  '</div>'
+
+  document.querySelectorAll('.paybtn').forEach(el=>el.addEventListener('click',()=>{
+    payMethod=el.dataset.pay; renderPayment()
+  }))
+}
+
+function processPayment(){
+  const m=PAY_METHODS.find(x=>x.id===payMethod)
+  document.getElementById('pay-body').innerHTML='<div class="card card-lg" style="text-align:center;padding:56px var(--gap-xl)">'+
+    '<div class="spin"></div>'+
+    '<h2 style="margin-top:var(--gap-xl);font-size:var(--t-600);font-weight:var(--w-bold)">Processing your payment</h2>'+
+    '<p class="lede" style="margin-top:6px">Confirming with '+m.name+'. This takes a moment &mdash; please do not close this page.</p></div>'
+  setTimeout(()=>{ issuePolicy(m.name) }, 1600)
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PURCHASE → POLICY ISSUED
+// ═══════════════════════════════════════════════════════════════
+let policy=null
+function polNumber(){
+  const n=Math.floor(Math.random()*900000+100000)
+  return 'SHA/'+new Date().getFullYear()+'/'+n
+}
+function addYear(iso){
+  const d=new Date(iso); d.setFullYear(d.getFullYear()+1); d.setDate(d.getDate()-1)
+  return d.toISOString().split('T')[0]
+}
+function issuePolicy(paidWith){
+  const p=buildPayload(state.ref||genRef())
+  policy={
+    number:polNumber(),
+    issuedOn:todayISO(),
+    from:p.policy.startDate,
+    to:addYear(p.policy.startDate),
+    paidWith:paidWith||'Card',
+    payload:p,
+  }
+  // Tell the team the policy is live.
+  if(!SUPABASE_URL||!SUPABASE_ANON){ /* prototype: email already sent at quote stage */ }
+  renderPolicy()
+  showPage('policy')
+}
+
+function renderPolicy(){
+  const p=policy.payload, isTak=p.contractBasis==='Takaful'
+  document.getElementById('pol-head').innerHTML=
+    '<div style="width:56px;height:56px;border-radius:var(--radius-full);background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin:0 auto var(--gap-md)">'+
+      '<svg style="width:30px;height:30px" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>'+
+    '<h1 style="font-size:var(--t-700);font-weight:var(--w-bold);letter-spacing:-.02em">You&rsquo;re covered.</h1>'+
+    '<p style="margin:var(--gap-default) 0 0;font-size:var(--t-400);color:var(--g-100)">'+
+      (isTak?'Contribution':'Payment')+' received via '+esc(policy.paidWith)+'. Cover starts '+fmtDate(policy.from)+'.</p>'
+
+  document.getElementById('pol-body').innerHTML=
+    '<div style="border-radius:var(--radius-btn);padding:var(--gap-lg);text-align:center;background:var(--ok-soft);border:var(--bw) solid var(--ok-line)">'+
+      '<p style="margin:0;font-size:var(--t-300);text-transform:uppercase;letter-spacing:.09em;color:var(--ok);font-weight:var(--w-bold)">Policy number</p>'+
+      '<p class="num" style="margin:5px 0 3px;font-size:var(--t-700);font-weight:var(--w-bold);letter-spacing:.03em">'+policy.number+'</p>'+
+      '<p class="tiny" style="margin:0">Give this at any D1 clinic</p></div>'+
+
+    '<button class="doclink" onclick="showDocument()">'+
+      '<span class="icon-chip" style="background:var(--accent-soft)"><svg fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25M9 16.5v.75m3-3v3m3-6v6m6-6v9a2.25 2.25 0 01-2.25 2.25h-9A2.25 2.25 0 016 20.25V4.5A2.25 2.25 0 018.25 2.25h5.379a2.25 2.25 0 011.59.659l4.122 4.122a2.25 2.25 0 01.659 1.59V20.25z"/></svg></span>'+
+      '<span style="flex:1;min-width:0">'+
+        '<span style="display:block;font-size:var(--t-400);font-weight:var(--w-bold);color:var(--accent)">Download your policy document</span>'+
+        '<span class="tiny" style="display:block">Opens your schedule &mdash; print or save as PDF</span></span>'+
+      '<svg style="width:18px;height:18px;color:var(--accent);flex-shrink:0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>'+
+    '</button>'+
+
+    '<div>'+
+      ln('Cover',p.speciesLabel+' &middot; '+p.package.tier)+
+      ln('Period',fmtDate(policy.from)+' &ndash; '+fmtDate(policy.to))+
+      ln('Annual vet limit',fmtShort(p.package.annualVetLimit))+
+      ln('Excess',p.package.excess)+
+      ln('Treated at',p.treatmentNetwork)+
+      ln('Annual '+(isTak?'contribution':'premium'),fmtAED2(p.premium),true)+
+    '</div>'+
+
+    (p.directBilling
+      ? '<div class="note note-green"><p style="margin:0;font-size:var(--t-400);font-weight:var(--w-bold);color:var(--ok)">Direct billing is live</p>'+
+        '<p class="tiny" style="margin:var(--gap-xs) 0 0">Your '+(p.animals.length===1?'animal is':'animals are')+' registered across the D1 network. Quote your policy number at reception and pay only your '+p.package.excess+' excess.</p></div>'
+      : '')+
+
+    '<p class="tiny" style="text-align:center">A copy has been emailed to '+esc(p.contact.email)+'.</p>'+
+    '<button class="btn btn-primary" onclick="goHome()">Insure another animal</button>'
+}
+
+function showDocument(){
+  const p=policy.payload, isTak=p.contractBasis==='Takaful'
+  const bens=BENEFITS[p.species].filter(b=>tierIndex(TIER_ORDER.find(t=>TIER_META[t].name===p.package.tier))>=tierIndex(b.from))
+  const dr=(k,v)=>'<div class="dr"><span>'+k+'</span><span>'+v+'</span></div>'
+
+  document.getElementById('doc-body').innerHTML=
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:var(--gap-lg);flex-wrap:wrap">'+
+      '<div><span class="logo" style="cursor:default;font-size:var(--t-700)">Shory<span>.</span></span>'+
+      '<p class="tiny" style="margin:6px 0 0">Shory Insurance Brokers LLC &middot; Licence 287</p></div>'+
+      '<div style="text-align:right">'+
+        '<p class="tiny" style="margin:0">Policy number</p>'+
+        '<p class="num" style="margin:2px 0 0;font-size:var(--t-500);font-weight:var(--w-bold)">'+policy.number+'</p></div>'+
+    '</div>'+
+    '<div class="rule"></div>'+
+
+    '<h1 style="margin-top:22px">'+(isTak?'Takaful Certificate':'Policy Schedule')+'</h1>'+
+    '<p class="lede">Animal Care &middot; '+p.speciesLabel+' &middot; '+p.package.tier+' package'+
+      '<br />Distributed through the D1 veterinary network</p>'+
+
+    '<h2>The '+(isTak?'participant':'policyholder')+'</h2>'+
+    '<div class="dl">'+
+      dr('Emirates ID','<span class="num">'+esc(p.contact.emiratesId)+'</span>')+
+      dr('Email',esc(p.contact.email))+
+      dr('Emirate',p.policy.emirate)+
+    '</div>'+
+
+    '<h2>Period of cover</h2>'+
+    '<div class="dl">'+
+      dr('From','<span class="num">'+fmtDate(policy.from)+'</span>')+
+      dr('To','<span class="num">'+fmtDate(policy.to)+'</span>')+
+      dr('Issued','<span class="num">'+fmtDate(policy.issuedOn)+'</span>')+
+      dr('Basis',p.contractBasis)+
+    '</div>'+
+
+    '<h2>Animals insured</h2>'+
+    '<div class="dl">'+
+      p.animals.map(a=>dr(esc(a.name)+' <span style="color:var(--text-faint)">&middot; '+esc(a.kind||a.activity||'')+'</span>',
+        '<span class="num">'+(a.agreedValue?fmtAED(a.agreedValue)+' agreed':'DOB '+isoToDMY(a.dateOfBirth))+'</span>')).join('')+
+    '</div>'+
+
+    '<h2>Limits and excess</h2>'+
+    '<div class="dl">'+
+      dr('Annual veterinary limit, per animal','<span class="num">'+fmtAED(p.package.annualVetLimit)+'</span>')+
+      dr('Third-party liability','<span class="num">'+fmtAED(p.package.thirdPartyLiability)+'</span>')+
+      dr('Death benefit',typeof p.package.deathBenefit==='number'?'<span class="num">'+fmtAED(p.package.deathBenefit)+'</span>':p.package.deathBenefit)+
+      dr('Excess payable by you',p.package.excess)+
+      dr('Treatment network',p.treatmentNetwork)+
+      dr('Direct billing',p.directBilling?'Yes':'No')+
+    '</div>'+
+
+    '<h2>What this package covers</h2>'+
+    '<ul>'+bens.map(b=>'<li>'+b.label+'</li>').join('')+'</ul>'+
+
+    '<h2>'+(isTak?'Contribution':'Premium')+'</h2>'+
+    '<div class="dl">'+
+      dr('Annual '+(isTak?'contribution':'premium'),'<strong class="num">'+fmtAED2(p.premium)+'</strong>')+
+      dr('Status','Paid in full')+
+    '</div>'+
+
+    '<h2>Principal exclusions</h2>'+
+    '<ul>'+
+      '<li>Pre-existing conditions, and anything arising from them.</li>'+
+      '<li>Illness first showing clinical signs within 14 days of the start date.</li>'+
+      '<li>Costs incurred more than 365 days after a condition first showed clinical signs.</li>'+
+      '<li>Elective, cosmetic and preventative treatment beyond the routine care stated above.</li>'+
+      '<li>Any claim where the animal is used for a purpose not shown in this schedule.</li>'+
+    '</ul>'+
+
+    (isTak
+      ? '<h2>Takaful basis</h2><p class="tiny" style="margin:0">'+CONTRACTS.takaful.note+'</p>'
+      : '')+
+
+    '<div class="rule" style="margin-top:28px"></div>'+
+    '<p class="tiny" style="margin-top:12px">This is an indicative schedule produced by a prototype and is not a contract of insurance. '+
+      'Cover is subject to the full policy wording, insurer acceptance and receipt of any veterinary certificate required.</p>'
+
+  showPage('document')
+}
+
+const _renderDetails=renderDetails
+renderDetails=function(){ _renderDetails(); attachDetailListeners() }
+
+renderHome()
+</script>
+</body>
+</html>
